@@ -1,1 +1,1 @@
-# cits5506
+# cits5506 IoT Group Project

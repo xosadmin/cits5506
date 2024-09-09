@@ -7,5 +7,12 @@ dbinfo = {
 }
 
 sysinfo = {
-    "timezone": "Australia/Sydney"
+    "timezone": "Australia/Sydney",
+    "prototypeAddr": "",
+    "prototypePort": 8080
+}
+
+mqttinfo = {
+    "brokerAddr": "",
+    "port": 1883,
 }

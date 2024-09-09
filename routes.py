@@ -5,6 +5,7 @@ from sqlalchemy import *
 from werkzeug.utils import secure_filename
 from models.sqlmodel import *
 from utils import uuidGen
+from conf import sysinfo
 import logging
 
 logger = logging.getLogger(__name__)

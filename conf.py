@@ -5,3 +5,7 @@ dbinfo = {
     "password": "",
     "dbname": ""
 }
+
+sysinfo = {
+    "timezone": "Australia/Sydney"
+}

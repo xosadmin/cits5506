@@ -1,9 +1,10 @@
 from flask_sqlalchemy import *
 from utils import uuidGen,randomName
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     __tablename__ = 'users'
     userID = db.Column(db.String(256), primary_key=True, default=uuidGen)
     username = db.Column(db.String(80), unique=True, nullable=False)

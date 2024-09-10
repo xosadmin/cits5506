@@ -36,10 +36,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global mqtt_data
     with mqtt_data_lock:
-        if msg.topic == "sensors/waterlevel":
-            mqtt_data['waterlevel'] = msg.payload.decode()
-        elif msg.topic == "sensors/turbity":
-            mqtt_data['turbity'] = msg.payload.decode()
+        if msg.topic == "sensors/waterlevel/waste":
+            mqtt_data['wastewaterlevel'] = msg.payload.decode()
+        elif msg.topic == "sensors/TurbiditySensor_Bowl":
+            mqtt_data['turbity_bowl'] = msg.payload.decode()
+        elif msg.topic == "sensors/TurbiditySensor_WaterTank":
+            mqtt_data['turbity_watertank'] = msg.payload.decode()
         elif msg.topic == "sensors/weight":
             mqtt_data['weight'] = msg.payload.decode()
     logger.info(f"Received MQTT message on {msg.topic}: {msg.payload.decode()}")

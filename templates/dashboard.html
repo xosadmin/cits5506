@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="url_for('static',filename='js/main.js')"></script>
     <style>
         .chart-container {
             display: flex;
@@ -49,7 +50,7 @@
     </nav>
     <div style="width: 80%; margin-left: auto; margin-right: auto;">
         <h1>Real-time Data</h1>
-        <p style="text-align: center;">Note: This page will be refreshed per 5 seconds.</p>
+        <p>Note: This page will be refreshed per 5 seconds.</p>
 
         <div class="chart-container">
             <div class="chart-item-large">
@@ -63,7 +64,8 @@
                 </div>
                 <div class="chart-item">
                     <h2>Turbidity</h2>
-                    <canvas id="turbityChart"></canvas>
+                    <p>Turbidity (Bowl) Level: {{turbBowl}}</p>
+                    <p>Turbidity (Water Tank) Level: {{turbWt}}</p>
                 </div>
                 <div class="chart-item">
                     <h2>Water Weight in bowl</h2>

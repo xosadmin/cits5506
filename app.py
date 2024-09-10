@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 
 # Global MQTT data and lock
 mqtt_data = {
-    'waterlevel': None,
-    'turbity': None,
+    'wastewaterlevel': None,
+    'turbity_bowl': None,
+    'turbity_watertank': None,
     'weight': None
 }
 mqtt_data_lock = Lock()
@@ -25,8 +26,9 @@ def on_connect(client, userdata, flags, rc):
     logger.info(f"MQTT Status: {rc}")
     if rc == 0:
         logger.info("MQTT connected successfully")
-        client.subscribe("sensors/waterlevel")
-        client.subscribe("sensors/turbity")
+        client.subscribe("sensors/waterlevel/waste")
+        client.subscribe("sensors/TurbiditySensor_Bowl")
+        client.subscribe("sensors/TurbiditySensor_WaterTank")
         client.subscribe("sensors/weight")
     else:
         logger.error(f"MQTT connection failed with status code {rc}")

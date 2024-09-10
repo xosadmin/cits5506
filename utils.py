@@ -4,7 +4,7 @@ import uuid
 import hashlib
 import pytz
 import random
-import requests,names
+import names
 
 def uuidGen():
     return str(uuid.uuid4())
@@ -21,14 +21,6 @@ def md5Calc(plainText):
     md5 = hashlib.md5()
     md5.update(plainText.encode('utf-8'))
     return str(md5.hexdigest())
-
-def commPrototype(addr,port,route):
-    url = "http://" + addr + ":" + str(port) + "/" + route
-    response = requests.get(url)
-    if response.status_code == 200:
-        return True
-    else:
-        return False
 
 def randomName():
     return names.get_full_name()

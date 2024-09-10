@@ -32,6 +32,7 @@ def mqtt_connect():
         print(f"Failed to connect to MQTT broker: {e}")
 
 def send_mqtt_message(topic, payload):
+    mqtt_connect()
     result = mqtt_client.publish(topic, payload)
     if result.rc != mqtt.MQTT_ERR_SUCCESS:
         return False

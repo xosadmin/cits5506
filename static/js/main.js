@@ -35,18 +35,22 @@ function enableButtons() {
     });
 }
 
-document.getElementById('RefreshPage').addEventListener('click', function() {
-    location.reload();
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('RefreshPage').addEventListener('click', function() {
+        location.reload();
+    });
+
+    document.getElementById('ChangeWater').addEventListener('click', function() {
+        triggerAction('changewater');
+    });
+
+    document.getElementById('RefillWater').addEventListener('click', function() {
+        triggerAction('refillwater');
+    });
+
+    document.getElementById('ResetFeeder').addEventListener('click', function() {
+        triggerAction('restartfeeder');
+    });
 });
 
-document.getElementById('ChangeWater').addEventListener('click', function() {
-    triggerAction('changewater');
-});
 
-document.getElementById('RefillWater').addEventListener('click', function() {
-    triggerAction('refillwater');
-});
-
-document.getElementById('ResetFeeder').addEventListener('click', function() {
-    triggerAction('restartfeeder');
-});

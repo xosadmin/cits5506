@@ -4,7 +4,7 @@ import uuid
 import hashlib
 import pytz
 import random
-import requests
+import requests,names
 
 def uuidGen():
     return str(uuid.uuid4())
@@ -29,3 +29,6 @@ def commPrototype(addr,port,route):
         return True
     else:
         return False
+
+def randomName():
+    return names.get_full_name()

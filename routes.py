@@ -1,4 +1,3 @@
-import os
 from flask import Blueprint, current_app, jsonify, request, render_template, url_for, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from sqlalchemy import and_
@@ -62,6 +61,11 @@ def mqtt_data_view():
 def dashboard():
     return render_template('dashboard.html', mqtt_data=mqtt_data)
 
+@mainBluePrint.route("/petmgmt")
+@login_required
+def petmgmt():
+    render_template("petmgmt.html")
+
 @mainBluePrint.route("/logout")
 @login_required
 def logout():
@@ -69,6 +73,7 @@ def logout():
     return render_template('logout.html')
 
 @mainBluePrint.route("/", methods=["GET", "POST"])
+@mainBluePrint.route("/login", methods=["POST"])
 def defaultReturn():
     if request.method == "GET":
         return render_template("login.html")

@@ -2,12 +2,14 @@ from flask import Blueprint, current_app, jsonify, request, render_template, url
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from sqlalchemy import and_
 from models.sqlmodel import Users, Pets
-from utils import uuidGen, commPrototype, getTime, md5Calc
+from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
 import logging
+import paho.mqtt.client as mqtt
 
 login_manager = LoginManager()
 logger = logging.getLogger(__name__)
+mqtt_client = mqtt.Client()
 mainBluePrint = Blueprint('mainBluePrint', __name__)
 
 @login_manager.user_loader
@@ -15,10 +17,26 @@ def load_user(user_id):
     return Users.query.get(int(user_id))
 
 mqtt_data = {
-    'waterlevel': None,
-    'turbity': None,
+    'wastewaterlevel': None,
+    'turbity_bowl': None,
+    'turbity_watertank': None,
     'weight': None
 }
+
+def mqtt_connect():
+    try:
+        mqtt_client.connect(mqttinfo['brokerAddr'], mqttinfo['port'], 60)
+        mqtt_client.loop_start()
+        print("MQTT connected")
+    except Exception as e:
+        print(f"Failed to connect to MQTT broker: {e}")
+
+def send_mqtt_message(topic, payload):
+    result = mqtt_client.publish(topic, payload)
+    if result.rc != mqtt.MQTT_ERR_SUCCESS:
+        return False
+    else:
+        return True
 
 @mainBluePrint.route("/petinfo/<rfid>", methods=["GET"])
 def getPetInfo(rfid):
@@ -35,13 +53,12 @@ def changewater(action):
     route = ""
     if action == "changewater":
         route = "changewater"
-    elif action == "waterrefill":
-        route = "waterrefill"
-    elif action == "resetfeeder":
-        route = "resetfeeder"
-
+    elif action == "refillwater":
+        route = "refillwater"
+    elif action == "restartfeeder":
+        route = "restartfeeder"
     if route:
-        resp = commPrototype(prototypeURL, prototypePort, route)
+        resp = send_mqtt_message("remotecommand",route)
         if resp:
             return jsonify({"Status": True, "Details": "Command successfully sent"})
         else:

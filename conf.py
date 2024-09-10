@@ -8,8 +8,6 @@ dbinfo = {
 
 sysinfo = {
     "timezone": "Australia/Sydney",
-    "prototypeAddr": "",
-    "prototypePort": 8080
 }
 
 mqttinfo = {

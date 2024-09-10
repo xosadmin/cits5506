@@ -49,8 +49,6 @@ def getPetInfo(rfid):
 
 @mainBluePrint.route("/manualactions/<action>", methods=["GET"])
 def changewater(action):
-    prototypeURL = sysinfo["prototypeAddr"]
-    prototypePort = sysinfo["prototypePort"]
     route = ""
     if action == "changewater":
         route = "changewater"
@@ -77,7 +75,15 @@ def mqtt_data_view():
 @mainBluePrint.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template('dashboard.html', mqtt_data=mqtt_data)
+    if mqtt_data.turbity_bowl == None or mqtt_data.turbity_bowl == 0:
+        turbBowl = "Low"
+    else:
+        turbBowl = "High"
+    if mqtt_data.turbity_watertank == None or mqtt_data.turbity_watertank == 0:
+        turbWt = "Low"
+    else:
+        turbWt = "High"
+    return render_template('dashboard.html', mqtt_data=mqtt_data,turbBowl=turbBowl,turbWt=turbWt)
 
 @mainBluePrint.route("/petmgmt")
 @login_required

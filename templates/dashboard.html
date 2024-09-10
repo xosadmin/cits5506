@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <meta http-equiv="refresh" content="5">
     <style>
         .chart-container {
             display: flex;
@@ -173,15 +174,12 @@
                     .then(response => response.json())
                     .then(data => {
                         waterlevelChart.data.datasets[0].data = [data.waterlevel];
-                        turbityChart.data.datasets[0].data = [data.turbity];
                         weightChart.data.datasets[0].data = [data.weight];
 
                         summaryChart.data.datasets[0].data = [data.waterlevel];
-                        summaryChart.data.datasets[1].data = [data.turbity];
                         summaryChart.data.datasets[2].data = [data.weight];
 
                         waterlevelChart.update();
-                        turbityChart.update();
                         weightChart.update();
                         summaryChart.update();
                     });

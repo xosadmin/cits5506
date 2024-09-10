@@ -49,4 +49,4 @@ document.getElementById('RefillWater').addEventListener('click', function() {
 
 document.getElementById('ResetFeeder').addEventListener('click', function() {
     triggerAction('restartfeeder');
-}
+});

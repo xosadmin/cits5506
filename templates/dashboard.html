@@ -106,29 +106,6 @@
                 }
             });
 
-            const turbityCtx = document.getElementById('turbityChart').getContext('2d');
-            const turbityChart = new Chart(turbityCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Turbidity'],
-                    datasets: [{
-                        label: 'Turbidity',
-                        data: [],
-                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
             const weightCtx = document.getElementById('weightChart').getContext('2d');
             const weightChart = new Chart(weightCtx, {
                 type: 'line',

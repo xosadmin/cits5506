@@ -16,3 +16,4 @@ class Pets(db.Model):
     __tablename__ = "pets"
     petID = db.Column(db.String(256), primary_key=True, default=uuidGen)
     petName = db.Column(db.String(80), nullable=False, default=randomName)
+    lastDrinkAmount = db.Column(db.Float, nullable=False, default=0)

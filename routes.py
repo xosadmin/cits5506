@@ -75,11 +75,11 @@ def mqtt_data_view():
 @mainBluePrint.route("/dashboard")
 @login_required
 def dashboard():
-    if mqtt_data.get('turbity_bowl') is None or mqtt_data.get('turbity_bowl') == 0:
+    if mqtt_data.get('turbity_bowl') is None or mqtt_data.get('turbity_bowl') <= 0.25:
         turbBowl = "Low"
     else:
         turbBowl = "High"
-    if mqtt_data.get('turbity_watertank') is None or mqtt_data.get('turbity_watertank') == 0:
+    if mqtt_data.get('turbity_watertank') is None or mqtt_data.get('turbity_watertank') <= 0.25:
         turbWt = "Low"
     else:
         turbWt = "High"

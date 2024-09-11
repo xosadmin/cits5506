@@ -48,6 +48,17 @@
           </ul>
         </div>
     </nav>
+    <div id="notification" style="width: 80%;">
+        {% if turbBowl == "High" %}
+            <div class="alert alert-warning">
+              <strong>Warning: </strong>Change water in bowl is necessary.
+            </div>
+        {% else if turbWt == "High" %}
+            <div class="alert alert-warning">
+              <strong>Warning: </strong>Change water in water tank is necessary.
+            </div>
+        {% endif %}
+    </div>
     <div style="width: 80%; margin-left: auto; margin-right: auto;">
         <h1>Real-time Data</h1>
         <p>Note: This page will be refreshed per 5 seconds.</p>
@@ -61,6 +72,9 @@
                 <div class="chart-item">
                     <h2>Water Level</h2>
                     <canvas id="waterlevelChart"></canvas>
+                    <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                      <span class="sr-only">70% Remaining</span>
+                    </div>
                 </div>
                 <div class="chart-item">
                     <h2>Turbidity</h2>

@@ -9,3 +9,4 @@ CREATE TABLE `users` (
 
 -- Add a test admin user with password admin
 INSERT INTO `users` VALUES ("0","admin",MD5("admin"),"admin");
+

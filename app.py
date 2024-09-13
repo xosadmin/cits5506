@@ -6,20 +6,11 @@ from routes import mainBluePrint, mqtt_data, login_manager
 import logging
 import paho.mqtt.client as mqtt
 import threading
-from threading import Lock
+from mqttlock import mqtt_data,mqtt_data_lock
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Global MQTT data and lock
-mqtt_data = {
-    'wastewaterlevel': None,
-    'turbity_bowl': None,
-    'turbity_watertank': None,
-    'weight': None
-}
-mqtt_data_lock = Lock()
 
 # MQTT Connection callback
 def on_connect(client, userdata, flags, rc):

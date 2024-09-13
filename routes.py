@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from models.sqlmodel import Users, Pets
 from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
-from app import mqtt_data
+from mqttlock import mqtt_data
 import logging
 import paho.mqtt.client as mqtt
 
@@ -16,13 +16,6 @@ mainBluePrint = Blueprint('mainBluePrint', __name__)
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
-
-# mqtt_data = {
-#     'wastewaterlevel': None,
-#     'turbity_bowl': None,
-#     'turbity_watertank': None,
-#     'weight': None
-# }
 
 def mqtt_connect():
     try:

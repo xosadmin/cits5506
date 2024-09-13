@@ -82,7 +82,7 @@ def dashboard():
 @mainBluePrint.route("/petmgmt")
 @login_required
 def petmgmt():
-    render_template("petmgmt.html")
+    return render_template("petmgmt.html")
 
 @mainBluePrint.route("/logout")
 @login_required

@@ -49,7 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('ResetFeeder').addEventListener('click', function() {
-        triggerAction('restartfeeder');
+        if (confirm("Danger Zone - You will lose connection with prototype for few minutes. Do you wish to continue?")) {
+            triggerAction('restartfeeder');
+        } else {
+            return;
+        }
     });
 });
 

@@ -97,7 +97,8 @@ def dashboard():
         turbWt = "Low"
     else:
         turbWt = "High"
-    return render_template('dashboard.html', mqtt_data=mqtt_data,turbBowl=turbBowl,turbWt=turbWt)
+    waterlevelpercentage = 0
+    return render_template('dashboard.html', mqtt_data=mqtt_data,turbBowl=turbBowl,turbWt=turbWt,waterlevelpercentage=waterlevelpercentage)
 
 @mainBluePrint.route("/petmgmt")
 @login_required

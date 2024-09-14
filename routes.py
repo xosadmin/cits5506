@@ -43,6 +43,7 @@ def getPetInfo(rfid):
         return jsonify({"error": "Pet not found"}), 404
 
 @mainBluePrint.route("/manualactions/<action>", methods=["GET"])
+@login_required
 def changewater(action):
     route = ""
     if action == "changewater":
@@ -94,16 +95,11 @@ def dashboard():
         turbBowl = "Low"
     else:
         turbBowl = "High"
-    if mqtt_data.get('turbity_watertank') is None or mqtt_data.get('turbity_watertank') <= 0.25:
-        turbWt = "Low"
-    else:
-        turbWt = "High"
     waterlevelpercentage = 0
     estimate_water_level_remain_days = 0
     return render_template('dashboard.html', 
                            mqtt_data=mqtt_data,
                            turbBowl=turbBowl,
-                           turbWt=turbWt,
                            waterlevelpercentage=waterlevelpercentage,
                            estimate_water_level_remain_days=estimate_water_level_remain_days,
                            wificonn=wificonn)

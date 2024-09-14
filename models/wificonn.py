@@ -1,5 +1,5 @@
 wificonn = {
     'ipaddr': None,
-    'rssi': None,
+    'rssi': 100,
     'uptime': None
 }

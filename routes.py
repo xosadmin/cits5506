@@ -13,6 +13,7 @@ login_manager = LoginManager()
 logger = logging.getLogger(__name__)
 mqtt_client = mqtt.Client()
 mainBluePrint = Blueprint('mainBluePrint', __name__)
+timezone = pytz.timezone("Australia/Sydney")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -67,10 +68,10 @@ def mqtt_data_view():
 
 @mainBluePrint.route('/addpetdrink', methods=['POST'])
 def submit_data():
+    global timezone
     if request.is_json:
         data = request.get_json()
         eventID = uuidGen()
-        timezone = pytz.timezone("Australia/Sydney")
         date = datetime.now(timezone)
         petID = data.get('petID')
         drinkAmount = data.get('drinkAmount')
@@ -84,6 +85,19 @@ def submit_data():
             return jsonify({"Status": False, "Details": "Internal Error occurred."}), 400
     else:
         return jsonify({"Status": False, "Details": "Request must be in JSON format"}), 400
+    
+@mainBluePrint.route('/update_wificonn', methods=['POST'])
+def update_wificonn():
+    global timezone
+    data = request.json
+    wificonn['ipaddr'] = data.get('ipaddr', wificonn['ipaddr'])
+    wificonn['rssi'] = data.get('rssi', wificonn['rssi'])
+    wificonn['lastseen'] = datetime.now(timezone).strftime("%d/%m/%Y-%H:%M:%S")
+    return jsonify({"Status": True, "Details": "Record updated."}), 200
+
+@mainBluePrint.route('/get_wificonn', methods=['GET'])
+def get_wificonn():
+    return jsonify(wificonn)
 
 # REST API handling end
 # Below are handling GUI queries

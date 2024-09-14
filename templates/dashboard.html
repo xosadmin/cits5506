@@ -100,7 +100,7 @@
                             <tr>
                                 <th>IP Address</th>
                                 <th>RSSI</th>
-                                <th>Feeder Uptime</th>
+                                <th>Feeder Last Seen</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,7 +115,7 @@
                                 {% else %}
                                     <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: grey;">Unknown</span>)</td>
                                 {% endif %}
-                                <td>{{ wificonn.uptime }}</td>
+                                <td>{{ wificonn.lastseen }}</td>
                             </tr>
                         </tbody>
                     </table>

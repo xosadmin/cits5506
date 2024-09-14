@@ -24,8 +24,26 @@
         </div>
     </nav>
     <div style="width: 80%; margin-left: auto; margin-right: auto;">
-        <h1>Pet Management</h1>
-
+        <h1>Pet Drink History</h1>
+        <p>&nbsp;</p>
+        <table class="table table-striped listcontents">
+            <tbody>
+            <tr>
+                <th scope="col">Pet No.</th>
+                <th scope="col">Pet Name</th>
+                <th scope="col">Date/Time</th>
+                <th scope="col">Water Drink (g)</th>
+            </tr>
+            {% for resultitem in result %}
+                <tr>
+                    <td>{{ resultitem.petID }}</td>
+                    <td>{{ resultitem.petName }}</td>
+                    <td>{{ resultitem.create_date }}</td>
+                    <td>{{ resultitem.drinkAmount }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

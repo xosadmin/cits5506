@@ -6,7 +6,7 @@ from routes import mainBluePrint, mqtt_data, login_manager
 import logging
 import paho.mqtt.client as mqtt
 import threading
-from mqttlock import mqtt_data,mqtt_data_lock
+from models.mqtt import mqtt_data,mqtt_data_lock
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

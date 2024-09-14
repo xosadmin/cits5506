@@ -1,10 +1,10 @@
 from flask import Blueprint, current_app, jsonify, request, render_template, url_for, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from sqlalchemy import and_
-from models.sqlmodel import Users, Pets
+from models.sqlmodel import *
 from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
-from mqttlock import mqtt_data
+from models.mqtt import mqtt_data
 import logging
 import paho.mqtt.client as mqtt
 
@@ -63,6 +63,26 @@ def changewater(action):
 def mqtt_data_view():
     return jsonify(mqtt_data)
 
+@mainBluePrint.route('/addpetdrink', methods=['POST'])
+def submit_data():
+    if request.is_json:
+        data = request.get_json()
+        eventID = uuidGen()
+        timezone = pytz.timezone("Australia/Sydney")
+        date = datetime.now(timezone)
+        petID = data.get('petID')
+        drinkAmount = data.get('drinkAmount')
+        try:
+            query = PetDrink(eventID=eventID, date=date, petID=petID, drinkAmount=drinkAmount)
+            db.session.add(query)
+            db.session.commit()
+            return jsonify({"Status": True, "Details": "Record updated."}), 200
+        except Exception as e:
+            print("Add Pet Drink Error: " + str(e))
+            return jsonify({"Status": False, "Details": "Internal Error occurred."}), 400
+    else:
+        return jsonify({"Status": False, "Details": "Request must be in JSON format"}), 400
+
 # REST API handling end
 # Below are handling GUI queries
 
@@ -83,6 +103,12 @@ def dashboard():
 @login_required
 def petmgmt():
     return render_template("petmgmt.html")
+
+@mainBluePrint.route("/drinkhistory")
+@login_required
+def drinkhistory():
+    query = PetDrink.query.order_by(PetDrink.drinkAmount.desc()).all()
+    return render_template("petdrinkhistory.html",result=query)
 
 @mainBluePrint.route("/logout")
 @login_required

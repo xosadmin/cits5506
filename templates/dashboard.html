@@ -91,6 +91,36 @@
                     <h2>Water Weight in bowl</h2>
                     <canvas id="weightChart"></canvas>
                 </div>
+                <div class="chart-item">
+                    <h2>Smart Water Feeder Connection</h2>
+                    <p>&nbsp;</p>
+                    <p>Connection Type: Wi-Fi</p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>IP Address</th>
+                                <th>RSSI</th>
+                                <th>Feeder Uptime</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ wificonn.ipaddr }}</td>
+                                {% if wificonn.rssi > 0 and wificonn.rssi <= 67 %}
+                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: green;">Good</span>)</td>
+                                {% elif wificonn.rssi > 67 and wificonn.rssi <= 80 %}
+                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: orange;">Fair</span>)</td>
+                                {% elif wificonn.rssi > 80 %}
+                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: red;">Poor</span>)</td>
+                                {% else %}
+                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: grey;">Unknown</span>)</td>
+                                {% endif %}
+                                <td>{{ wificonn.uptime }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
             </div>
         </div>
         <p>&nbsp;</p>

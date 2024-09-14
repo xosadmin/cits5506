@@ -6,4 +6,5 @@ mqtt_data = {
     'valve': None,
     'weightBowl': None
 }
+
 mqtt_data_lock = Lock()

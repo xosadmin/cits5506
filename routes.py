@@ -107,7 +107,12 @@ def petmgmt():
 @mainBluePrint.route("/drinkhistory")
 @login_required
 def drinkhistory():
-    query = PetDrink.query.order_by(PetDrink.drinkAmount.desc()).all()
+    query = db.session.query(
+        PetDrink.petID,
+        Pets.petName,
+        PetDrink.create_date,
+        PetDrink.drinkAmount
+    ).join(Pets, PetDrink.petID == Pets.petID).order_by(PetDrink.drinkAmount.desc()).all()
     return render_template("petdrinkhistory.html",result=query)
 
 @mainBluePrint.route("/logout")

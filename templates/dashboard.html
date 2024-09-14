@@ -9,7 +9,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <meta http-equiv="refresh" content="5">
     <style>
         .chart-container {
             display: flex;
@@ -220,20 +219,42 @@
                 }
             });
 
+            let waterlevelHistory = [];
+            let weightHistory = [];
+            let timeLabels = [];
+
             setInterval(() => {
                 fetch('/mqtt_data')
                     .then(response => response.json())
                     .then(data => {
-                        waterlevelChart.data.datasets[0].data = [data.waterlevel];
-                        weightChart.data.datasets[0].data = [data.weight];
+                        let currentTime = new Date().toLocaleTimeString();
 
-                        summaryChart.data.datasets[0].data = [data.waterlevel];
-                        summaryChart.data.datasets[2].data = [data.weight];
+                        waterlevelHistory.push(data.waterlevel);
+                        weightHistory.push(data.weight);
+                        timeLabels.push(currentTime); 
 
+                        if (waterlevelHistory.length > 100) {
+                            waterlevelHistory.shift();
+                            timeLabels.shift();
+                        }
+                        if (weightHistory.length > 100) {
+                            weightHistory.shift();
+                        }
+
+                        waterlevelChart.data.labels = timeLabels;
+                        waterlevelChart.data.datasets[0].data = waterlevelHistory;
                         waterlevelChart.update();
+
+                        weightChart.data.labels = timeLabels;
+                        weightChart.data.datasets[0].data = weightHistory;
                         weightChart.update();
+
+                        summaryChart.data.labels = timeLabels;
+                        summaryChart.data.datasets[0].data = waterlevelHistory;
+                        summaryChart.data.datasets[2].data = weightHistory;
                         summaryChart.update();
-                    });
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
             }, 5000);
         </script>
     </div>

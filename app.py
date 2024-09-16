@@ -21,11 +21,10 @@ def on_connect(client, userdata, flags, rc):
     print(f"MQTT Status: {rc}")
     if rc == 0:
         app.logger.info("MQTT connected successfully")
-        client.subscribe("sensor/waterlevel/waste")
-        client.subscribe("sensor/TurbiditySensor_Bowl")
-        client.subscribe("sensor/valve")
-        client.subscribe("sensor/wasteTank")
-        client.subscribe("sensor/weightBowl")
+        client.subscribe("waterlevelwaste")
+        client.subscribe("turbiditysensor")
+        client.subscribe("valve")
+        client.subscribe("weightbowl")
     else:
         app.logger.info(f"MQTT connection failed with status code {rc}")
 
@@ -45,13 +44,13 @@ def update_sensor_data(topic,value):
 
 def on_message(client, userdata, msg):
     data = msg.payload.decode()
-    if msg.topic == "sensor/wastewaterlevel":
+    if msg.topic == "waterlevelwaste":
         update_sensor_data("wastewaterlevel",data)
-    elif msg.topic == "sensor/TurbiditySensor_Bowl":
+    elif msg.topic == "turbiditysensor":
         update_sensor_data("turbity_bowl",data)
-    elif msg.topic == "sensor/valve":
+    elif msg.topic == "valve":
         update_sensor_data("valve",data)
-    elif msg.topic == "sensor/weightBowl":
+    elif msg.topic == "weightbowl":
         update_sensor_data("weightBowl",data)
     logger.info(f"Received MQTT message on {msg.topic}: {data}")
 

@@ -9,7 +9,11 @@ import threading
 import logging
 from models.mqtt import mqtt_data
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    filename='app.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 # MQTT Connection callback

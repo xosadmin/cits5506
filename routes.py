@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from models.sqlmodel import *
 from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
-from models.mqtt import mqtt_data
+from models.mqtt import mqtt_data, mqtt_data_lock
 from models.wificonn import wificonn
 import logging
 import paho.mqtt.client as mqtt
@@ -102,7 +102,8 @@ def update_wificonn():
 
 @mainBluePrint.route('/get_wificonn', methods=['GET'])
 def get_wificonn():
-    return jsonify(wificonn)
+    with mqtt_data_lock:
+        return jsonify(mqtt_data)
 
 # REST API handling end
 # Below are handling GUI queries

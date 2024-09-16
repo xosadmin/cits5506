@@ -7,7 +7,7 @@ from routes import mainBluePrint, login_manager
 import paho.mqtt.client as mqtt
 import threading
 import logging
-from models.mqtt import mqtt_data
+from models.mqtt import mqtt_data, mqtt_data_lock
 
 logging.basicConfig(
     filename='app.log',
@@ -30,18 +30,16 @@ def on_connect(client, userdata, flags, rc):
         app.logger.info(f"MQTT connection failed with status code {rc}")
 
 def on_message(client, userdata, msg):
-    global mqtt_data
-    data = msg.payload.decode()
-    if msg.topic == "sensor/wastewaterlevel":
-        mqtt_data['wastewaterlevel'] = data
-    elif msg.topic == "sensor/TurbiditySensor_Bowl":
-        mqtt_data['turbity_bowl'] = data
-    elif msg.topic == "sensor/valve":
-        mqtt_data['valve'] = data
-    elif msg.topic == "sensor/weightBowl":
-        mqtt_data['weightBowl'] = data
-    app.logger.info(f"Received MQTT message on {msg.topic}: {data}")
-
+    with mqtt_data_lock:
+        if msg.topic == "sensor/wastewaterlevel":
+            mqtt_data['wastewaterlevel'] = msg.payload.decode()
+        elif msg.topic == "sensor/TurbiditySensor_Bowl":
+            mqtt_data['turbity_bowl'] = msg.payload.decode()
+        elif msg.topic == "sensor/valve":
+            mqtt_data['valve'] = msg.payload.decode()
+        elif msg.topic == "sensor/weightBowl":
+            mqtt_data['weightBowl'] = msg.payload.decode()
+    logger.info(f"Received MQTT message on {msg.topic}: {msg.payload.decode()}")
 def start_mqtt():
     client = mqtt.Client()
     client.on_connect = on_connect

@@ -36,7 +36,7 @@ def on_message(client, userdata, msg):
             mqtt_data['valve'] = msg.payload.decode()
         elif msg.topic == "sensor/weightBowl":
             mqtt_data['weightBowl'] = msg.payload.decode()
-    logger.info(f"Received MQTT message on {msg.topic}: {msg.payload.decode()}")
+    print(f"Received MQTT message on {msg.topic}: {msg.payload.decode()}")
 
 def start_mqtt():
     client = mqtt.Client()

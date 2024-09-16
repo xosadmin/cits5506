@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from models.sqlmodel import *
 from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
-from models.mqtt import mqtt_data
+from models.mqtt import mqtt_data, mqtt_data_lock
 from models.wificonn import wificonn
 import logging
 import paho.mqtt.client as mqtt
@@ -64,7 +64,8 @@ def changewater(action):
 
 @mainBluePrint.route('/mqtt_data')
 def mqtt_data_view():
-    return jsonify(mqtt_data)
+    with mqtt_data_lock:
+        return jsonify(mqtt_data)
 
 @mainBluePrint.route('/addpetdrink', methods=['POST'])
 def submit_data():

@@ -100,6 +100,14 @@ def update_wificonn():
     wificonn['lastseen'] = datetime.now(timezone).strftime("%d/%m/%Y-%H:%M:%S")
     return jsonify({"Status": True, "Details": "Record updated."}), 200
 
+@mainBluePrint.route('/update_sensordata', methods=['POST'])
+def update_wificonn():
+    global timezone
+    data = request.json
+    mqtt_data['sensor'] = data.get('sensor', wificonn['sensor'])
+    mqtt_data['value'] = data.get('value', wificonn['value'])
+    return jsonify({"Status": True, "Details": "Record updated."}), 200
+
 @mainBluePrint.route('/get_wificonn', methods=['GET'])
 def get_wificonn():
     with mqtt_data_lock:

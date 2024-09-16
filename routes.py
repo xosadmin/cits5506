@@ -117,17 +117,10 @@ def get_mqttdata():
 @mainBluePrint.route("/dashboard")
 @login_required
 def dashboard():
-    if mqtt_data.get('turbity_bowl') is None or mqtt_data.get('turbity_bowl') >= 700:
-        turbBowl = "Good"
-    elif mqtt_data.get('turbity_bowl') >= 301 and mqtt_data.get('turbity_bowl') < 700:
-        turbBowl = "Fair"
-    else:
-        turbBowl = "Bad"
     waterlevelpercentage = 0
     estimate_water_level_remain_days = 0
     return render_template('dashboard.html', 
                            mqtt_data=mqtt_data,
-                           turbBowl=turbBowl,
                            waterlevelpercentage=waterlevelpercentage,
                            estimate_water_level_remain_days=estimate_water_level_remain_days,
                            wificonn=wificonn)

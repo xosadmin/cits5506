@@ -4,27 +4,22 @@ from conf import dbinfo, mqttinfo
 from models.sqlmodel import db
 from utils import uuidGen
 from routes import mainBluePrint, login_manager
-import logging
 import paho.mqtt.client as mqtt
 import threading
 from models.mqtt import mqtt_data
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # MQTT Connection callback
 def on_connect(client, userdata, flags, rc):
     print(f"MQTT Status: {rc}")
     if rc == 0:
-        logger.info("MQTT connected successfully")
+        app.logger.info("MQTT connected successfully")
         client.subscribe("sensor/waterlevel/waste")
         client.subscribe("sensor/TurbiditySensor_Bowl")
         client.subscribe("sensor/valve")
         client.subscribe("sensor/wasteTank")
         client.subscribe("sensor/weightBowl")
     else:
-        print(f"MQTT connection failed with status code {rc}")
+        app.logger.info(f"MQTT connection failed with status code {rc}")
 
 def on_message(client, userdata, msg):
     global mqtt_data
@@ -37,7 +32,7 @@ def on_message(client, userdata, msg):
         mqtt_data['valve'] = data
     elif msg.topic == "sensor/weightBowl":
         mqtt_data['weightBowl'] = data
-    print(f"Received MQTT message on {msg.topic}: {data}")
+    app.logger.info(f"Received MQTT message on {msg.topic}: {data}")
 
 def start_mqtt():
     client = mqtt.Client()
@@ -48,7 +43,7 @@ def start_mqtt():
         print("Connected to MQTT Broker.")
         client.loop_forever()
     except Exception as e:
-        logger.error(f"Failed to connect to MQTT broker: {e}")
+        app.logger.info(f"Failed to connect to MQTT broker: {e}")
         time.sleep(5)
         start_mqtt()
 
@@ -60,9 +55,10 @@ def create_app():
         app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
         app.config['SECRET_KEY'] = uuidGen()
     except Exception as e:
-        logger.error(f"Failed to create app: {e}")
+        app.logger.info(f"Failed to create app: {e}")
         raise
     db.init_app(app)
+    app.logger.setLevel(logging.INFO)
     app.register_blueprint(mainBluePrint)
     login_manager.init_app(app)  # Initialize the login manager
     login_manager.login_view = "mainBluePrint.defaultReturn"  # Default login view

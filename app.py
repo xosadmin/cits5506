@@ -1,12 +1,13 @@
 from flask import Flask
+import time
 from conf import dbinfo, mqttinfo
 from models.sqlmodel import db
 from utils import uuidGen
-from routes import mainBluePrint, mqtt_data, login_manager
+from routes import mainBluePrint, login_manager
 import logging
 import paho.mqtt.client as mqtt
 import threading
-from models.mqtt import mqtt_data,mqtt_data_lock
+from models.mqtt import mqtt_data, mqtt_data_lock
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # MQTT Connection callback
 def on_connect(client, userdata, flags, rc):
-    logger.info(f"MQTT Status: {rc}")
+    print(f"MQTT Status: {rc}")
     if rc == 0:
         logger.info("MQTT connected successfully")
         client.subscribe("sensor/waterlevel/waste")
@@ -23,20 +24,21 @@ def on_connect(client, userdata, flags, rc):
         client.subscribe("sensor/wasteTank")
         client.subscribe("sensor/weightBowl")
     else:
-        logger.error(f"MQTT connection failed with status code {rc}")
+        print(f"MQTT connection failed with status code {rc}")
 
 def on_message(client, userdata, msg):
     global mqtt_data
     with mqtt_data_lock:
+        data = msg.payload.decode()
         if msg.topic == "sensor/wastewaterlevel":
-            mqtt_data['wastewaterlevel'] = msg.payload.decode()
+            mqtt_data['wastewaterlevel'] = data
         elif msg.topic == "sensor/TurbiditySensor_Bowl":
-            mqtt_data['turbity_bowl'] = msg.payload.decode()
+            mqtt_data['turbity_bowl'] = data
         elif msg.topic == "sensor/valve":
-            mqtt_data['valve'] = msg.payload.decode()
+            mqtt_data['valve'] = data
         elif msg.topic == "sensor/weightBowl":
-            mqtt_data['weightBowl'] = msg.payload.decode()
-    print(f"Received MQTT message on {msg.topic}: {msg.payload.decode()}")
+            mqtt_data['weightBowl'] = data
+    print(f"Received MQTT message on {msg.topic}: {data}")
 
 def start_mqtt():
     client = mqtt.Client()
@@ -44,9 +46,12 @@ def start_mqtt():
     client.on_message = on_message
     try:
         client.connect(mqttinfo["brokerAddr"], mqttinfo["port"], 60)
+        print("Connected to MQTT Broker.")
         client.loop_forever()
     except Exception as e:
         logger.error(f"Failed to connect to MQTT broker: {e}")
+        time.sleep(5)
+        start_mqtt()
 
 def create_app():
     app = Flask(__name__)

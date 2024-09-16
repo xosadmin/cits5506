@@ -95,7 +95,11 @@
                 <div class="chart-item-large">
                     <h2>Smart Water Feeder Connection</h2>
                     <p>&nbsp;</p>
-                    <p>Connection Type: Wi-Fi</p>
+                    {% if wificonn.rssi > 99 %}
+                        <p>Connection Type: Copper(Network Cable) or Others</p>
+                    {% else %}
+                        <p>Connection Type: Wi-Fi</p>
+                    {% endif %}
                     <table class="table">
                         <thead>
                             <tr>

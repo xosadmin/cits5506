@@ -101,15 +101,14 @@ def update_wificonn():
     return jsonify({"Status": True, "Details": "Record updated."}), 200
 
 @mainBluePrint.route('/update_sensordata', methods=['POST'])
-def update_wificonn():
-    global timezone
+def update_sensordata():
     data = request.json
-    mqtt_data['sensor'] = data.get('sensor', wificonn['sensor'])
-    mqtt_data['value'] = data.get('value', wificonn['value'])
+    mqtt_data['sensor'] = data.get('sensor', mqtt_data['sensor'])
+    mqtt_data['value'] = data.get('value', mqtt_data['value'])
     return jsonify({"Status": True, "Details": "Record updated."}), 200
 
-@mainBluePrint.route('/get_wificonn', methods=['GET'])
-def get_wificonn():
+@mainBluePrint.route('/mqtt_data', methods=['GET'])
+def get_mqttdata():
     return jsonify(mqtt_data)
 
 # REST API handling end

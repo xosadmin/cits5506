@@ -17,24 +17,24 @@ def on_connect(client, userdata, flags, rc):
     logger.info(f"MQTT Status: {rc}")
     if rc == 0:
         logger.info("MQTT connected successfully")
-        client.subscribe("sensors/waterlevel/waste")
-        client.subscribe("sensors/TurbiditySensor_Bowl")
-        client.subscribe("sensors/valve")
-        client.subscribe("sensors/wasteTank")
-        client.subscribe("sensors/weightBowl")
+        client.subscribe("sensor/waterlevel/waste")
+        client.subscribe("sensor/TurbiditySensor_Bowl")
+        client.subscribe("sensor/valve")
+        client.subscribe("sensor/wasteTank")
+        client.subscribe("sensor/weightBowl")
     else:
         logger.error(f"MQTT connection failed with status code {rc}")
 
 def on_message(client, userdata, msg):
     global mqtt_data
     with mqtt_data_lock:
-        if msg.topic == "sensors/wastewaterlevel":
+        if msg.topic == "sensor/wastewaterlevel":
             mqtt_data['wastewaterlevel'] = msg.payload.decode()
-        elif msg.topic == "sensors/TurbiditySensor_Bowl":
+        elif msg.topic == "sensor/TurbiditySensor_Bowl":
             mqtt_data['turbity_bowl'] = msg.payload.decode()
-        elif msg.topic == "sensors/valve":
+        elif msg.topic == "sensor/valve":
             mqtt_data['valve'] = msg.payload.decode()
-        elif msg.topic == "sensors/weightBowl":
+        elif msg.topic == "sensor/weightBowl":
             mqtt_data['weightBowl'] = msg.payload.decode()
     logger.info(f"Received MQTT message on {msg.topic}: {msg.payload.decode()}")
 

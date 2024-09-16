@@ -72,7 +72,7 @@
                 <div class="chart-item">
                     <h2>Water Level</h2>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:{{waterlevelpercentage}}%;">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{waterlevelpercentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{waterlevelpercentage}}%;">
                             {{waterlevelpercentage}}%
                         </div>
                     </div>
@@ -84,6 +84,7 @@
                 <div class="chart-item">
                     <h2>Turbidity</h2>
                     <p>Water quality in bowl: <b>{{turbBowl}}</b></p>
+                    <canvas id="turbChart"></canvas>
                 </div>
                 <div class="chart-item">
                     <h2>Water Weight in bowl</h2>
@@ -110,7 +111,7 @@
                                     <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: green;">Good</span>)</td>
                                 {% elif wificonn.rssi > 67 and wificonn.rssi <= 80 %}
                                     <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: orange;">Fair</span>)</td>
-                                {% elif wificonn.rssi > 80 %}
+                                {% elif wificonn.rssi > 80 and wificonn.rssi <= 99 %}
                                     <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: red;">Poor</span>)</td>
                                 {% else %}
                                     <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: grey;">Unknown</span>)</td>
@@ -179,6 +180,29 @@
                 }
             });
 
+            const turbCtx = document.getElementById('turbChart').getContext('2d');
+            const turbChart = new Chart(turbCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Turbidity'],
+                    datasets: [{
+                        label: 'Turbidity',
+                        data: [],
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
             const summaryCtx = document.getElementById('summaryChart').getContext('2d');
             const summaryChart = new Chart(summaryCtx, {
                 type: 'line',
@@ -220,6 +244,7 @@
 
             let waterlevelHistory = [];
             let weightHistory = [];
+            let turbHistory = [];
             let timeLabels = [];
 
             setInterval(() => {
@@ -230,6 +255,7 @@
 
                         waterlevelHistory.push(data.waterlevel);
                         weightHistory.push(data.weight);
+                        turbHistory.push(data.turbity_bowl);
                         timeLabels.push(currentTime); 
 
                         if (waterlevelHistory.length > 100) {
@@ -248,8 +274,13 @@
                         weightChart.data.datasets[0].data = weightHistory;
                         weightChart.update();
 
+                        turbChart.data.labels = timeLabels;
+                        turbChart.data.datasets[0].data = turbHistory;
+                        turbChart.update();
+
                         summaryChart.data.labels = timeLabels;
                         summaryChart.data.datasets[0].data = waterlevelHistory;
+                        summaryChart.data.datasets[1].data = turbHistory;
                         summaryChart.data.datasets[2].data = weightHistory;
                         summaryChart.update();
                     })

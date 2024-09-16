@@ -103,8 +103,8 @@ def update_wificonn():
 @mainBluePrint.route('/update_sensordata', methods=['POST'])
 def update_sensordata():
     data = request.json
-    sensor = data.get('sensor', mqtt_data['sensor'])
-    mqtt_data[sensor] = data.get('value', mqtt_data['value'])
+    sensor = data.get('sensor', None)
+    mqtt_data[sensor] = data.get('value', None)
     return jsonify({"Status": True, "Details": "Record updated."}), 200
 
 @mainBluePrint.route('/mqtt_data', methods=['GET'])

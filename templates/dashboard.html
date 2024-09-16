@@ -257,9 +257,9 @@
                     .then(data => {
                         let currentTime = new Date().toLocaleTimeString();
 
-                        waterlevelHistory.push(data.waterlevel);
-                        weightHistory.push(data.weight);
-                        turbHistory.push(data.turbity_bowl);
+                        waterlevelHistory.push(data.wastewaterlevel);
+                        weightHistory.push(data.weightBowl);
+                        turbHistory.push(data.turbiditysensor);
                         timeLabels.push(currentTime); 
 
                         if (waterlevelHistory.length > 100) {

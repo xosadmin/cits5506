@@ -1,6 +1,6 @@
 mqtt_data = {
     'wastewaterlevel': None,
-    'turbity_bowl': None,
+    'turbiditysensor': None,
     'valve': None,
     'weightBowl': None
 }

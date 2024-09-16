@@ -1,5 +1,4 @@
 from flask import Flask
-from mqttclient import start_mqtt
 from conf import dbinfo
 from models.sqlmodel import db
 from utils import uuidGen
@@ -32,13 +31,7 @@ def create_app():
     login_manager.login_view = "mainBluePrint.defaultReturn"  # Default login view
     return app
 
-def start_mqtt_thread():
-    mqtt_thread = threading.Thread(target=start_mqtt)
-    mqtt_thread.daemon = True  # Set thread as daemon so it exits when the main thread does
-    mqtt_thread.start()
-
 app = create_app()
 
 if __name__ == '__main__':
-    start_mqtt_thread()
     app.run(debug=True)

@@ -95,11 +95,7 @@
                 <div class="chart-item-large">
                     <h2>Smart Water Feeder Connection</h2>
                     <p>&nbsp;</p>
-                    {% if wificonn.rssi > 99 %}
-                        <p>Connection Type: <b>Copper(Network Cable) or Others</b></p>
-                    {% else %}
-                        <p>Connection Type: <b>Wi-Fi</b></p>
-                    {% endif %}
+                    <p>Connection Type: <span id="conntype"> </span></p>
                     <table class="table">
                         <thead>
                             <tr>
@@ -110,16 +106,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ wificonn.ipaddr }}</td>
-                                {% if wificonn.rssi > 0 and wificonn.rssi <= 67 %}
-                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: green;">Good</span>)</td>
-                                {% elif wificonn.rssi > 67 and wificonn.rssi <= 80 %}
-                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: orange;">Fair</span>)</td>
-                                {% elif wificonn.rssi > 80 and wificonn.rssi <= 99 %}
-                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: red;">Poor</span>)</td>
-                                {% else %}
-                                    <td>{{ wificonn.rssi }} (<span style="font-weight: bold; color: grey;">Unknown</span>)</td>
-                                {% endif %}
+                                <td id="ipaddrdisplay"></td>
+                                <td><span id="rssidisplay"></span> (<span id="connquality"></span>)</td>
                                 <td>{{ wificonn.lastseen }}</td>
                             </tr>
                         </tbody>
@@ -298,6 +286,29 @@
                     })
                     .catch(error => console.error('Error fetching data:', error));
             }, 5000);
+
+            setInterval(() => {
+                fetch('/conn_data')
+                    .then(response => response.json())
+                    .then(conndata => {
+                        document.getElementById("ipaddrdisplay").innerHTML = "<p>" + conndata.ipaddr + "</p>";
+                        document.getElementById("rssidisplay").innerText = conndata.rssi;
+                        if (conndata.rssi > 80 && conndata.rssi <= 99){
+                            document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
+                            document.getElementById("connquality").innerHTML = "<b style='color: red;'>Poor</b>";
+                        } else if (conndata.rssi > 67 && conndata.rssi <= 80) {
+                            document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
+                            document.getElementById("connquality").innerHTML = "<b style='color: orange;'>Fair</b>";
+                        } else if (conndata.rssi >= 0 && conndata.rssi <= 67) {
+                            document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
+                            document.getElementById("connquality").innerHTML = "<b style='color: green;'>Good</b>";
+                        } else {
+                            document.getElementById("conntype").innerHTML = "<b>Copper (Network Cable) or unknown</b>";
+                            document.getElementById("connquality").innerHTML = "<b style='color: gray;'>Unknown or copper connection</b>";
+                        }
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }, 2000);
         </script>
     </div>
 </body>

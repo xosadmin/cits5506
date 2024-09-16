@@ -71,6 +71,10 @@ def changewater(action):
 def mqtt_data_view():
     return jsonify(mqtt_data)
 
+@mainBluePrint.route('/conn_data')
+def conn_data_view():
+    return jsonify(wificonn)
+
 @mainBluePrint.route('/addpetdrink', methods=['POST'])
 def submit_data():
     global timezone
@@ -106,10 +110,6 @@ def update_sensordata():
     sensor = data.get('sensor', None)
     mqtt_data[sensor] = data.get('value', None)
     return jsonify({"Status": True, "Details": "Record updated."}), 200
-
-@mainBluePrint.route('/mqtt_data', methods=['GET'])
-def get_mqttdata():
-    return jsonify(mqtt_data)
 
 # REST API handling end
 # Below are handling GUI queries

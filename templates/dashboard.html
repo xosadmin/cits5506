@@ -83,7 +83,7 @@
                 </div>
                 <div class="chart-item">
                     <h2>Turbidity</h2>
-                    <p>Water quality in bowl: <b>{{turbBowl}}</b></p>
+                    <p>Water quality in bowl: <div id="water_quality_bowl"></div></p>
                     <canvas id="turbChart"></canvas>
                 </div>
                 <div class="chart-item">
@@ -96,9 +96,9 @@
                     <h2>Smart Water Feeder Connection</h2>
                     <p>&nbsp;</p>
                     {% if wificonn.rssi > 99 %}
-                        <p>Connection Type: Copper(Network Cable) or Others</p>
+                        <p>Connection Type: <b>Copper(Network Cable) or Others</b></p>
                     {% else %}
-                        <p>Connection Type: Wi-Fi</p>
+                        <p>Connection Type: <b>Wi-Fi</b></p>
                     {% endif %}
                     <table class="table">
                         <thead>
@@ -268,6 +268,14 @@
                         }
                         if (weightHistory.length > 100) {
                             weightHistory.shift();
+                        }
+
+                        if (data.turbiditysensor >= 700) {
+                            document.getElementById("water_quality_bowl").innerHTML = "<b>Good</b>";
+                        } else if (data.turbiditysensor >= 301 && data.turbiditysensor < 700) {
+                            document.getElementById("water_quality_bowl").innerHTML = "<b>Fair</b>";
+                        } else {
+                            document.getElementById("water_quality_bowl").innerHTML = "<b>Bad or unknown</b>";
                         }
 
                         waterlevelChart.data.labels = timeLabels;

@@ -110,8 +110,7 @@ def update_wificonn():
 
 @mainBluePrint.route('/get_wificonn', methods=['GET'])
 def get_wificonn():
-    with mqtt_data_lock:
-        return jsonify(mqtt_data)
+    return jsonify(mqtt_data)
 
 # REST API handling end
 # Below are handling GUI queries

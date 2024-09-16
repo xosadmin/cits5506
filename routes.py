@@ -64,8 +64,7 @@ def changewater(action):
 
 @mainBluePrint.route('/mqtt_data')
 def mqtt_data_view():
-    with mqtt_data_lock:
-        return jsonify(mqtt_data)
+    return jsonify(mqtt_data)
 
 @mainBluePrint.route('/addpetdrink', methods=['POST'])
 def submit_data():

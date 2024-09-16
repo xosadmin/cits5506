@@ -28,16 +28,15 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     global mqtt_data
-    with mqtt_data_lock:
-        data = msg.payload.decode()
-        if msg.topic == "sensor/wastewaterlevel":
-            mqtt_data['wastewaterlevel'] = data
-        elif msg.topic == "sensor/TurbiditySensor_Bowl":
-            mqtt_data['turbity_bowl'] = data
-        elif msg.topic == "sensor/valve":
-            mqtt_data['valve'] = data
-        elif msg.topic == "sensor/weightBowl":
-            mqtt_data['weightBowl'] = data
+    data = msg.payload.decode()
+    if msg.topic == "sensor/wastewaterlevel":
+        mqtt_data['wastewaterlevel'] = data
+    elif msg.topic == "sensor/TurbiditySensor_Bowl":
+        mqtt_data['turbity_bowl'] = data
+    elif msg.topic == "sensor/valve":
+        mqtt_data['valve'] = data
+    elif msg.topic == "sensor/weightBowl":
+        mqtt_data['weightBowl'] = data
     print(f"Received MQTT message on {msg.topic}: {data}")
 
 def start_mqtt():
@@ -45,7 +44,7 @@ def start_mqtt():
     client.on_connect = on_connect
     client.on_message = on_message
     try:
-        client.connect(mqttinfo["brokerAddr"], mqttinfo["port"], 60)
+        client.connect(mqttinfo["brokerAddr"], mqttinfo["port"])
         print("Connected to MQTT Broker.")
         client.loop_forever()
     except Exception as e:

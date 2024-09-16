@@ -6,7 +6,11 @@ from utils import uuidGen
 from routes import mainBluePrint, login_manager
 import paho.mqtt.client as mqtt
 import threading
+import logging
 from models.mqtt import mqtt_data
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # MQTT Connection callback
 def on_connect(client, userdata, flags, rc):
@@ -54,11 +58,11 @@ def create_app():
                  f"{dbinfo['server']}:{dbinfo['port']}/{dbinfo['dbname']}"
         app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
         app.config['SECRET_KEY'] = uuidGen()
+        app.logger.setLevel(logging.INFO)
     except Exception as e:
         app.logger.info(f"Failed to create app: {e}")
         raise
     db.init_app(app)
-    app.logger.setLevel(logging.INFO)
     app.register_blueprint(mainBluePrint)
     login_manager.init_app(app)  # Initialize the login manager
     login_manager.login_view = "mainBluePrint.defaultReturn"  # Default login view

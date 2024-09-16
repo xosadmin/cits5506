@@ -6,9 +6,12 @@ from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
 from models.mqtt import mqtt_data
 from models.wificonn import wificonn
+import logging
 import paho.mqtt.client as mqtt
 
 login_manager = LoginManager()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 mqtt_client = mqtt.Client()
 mainBluePrint = Blueprint('mainBluePrint', __name__)
 timezone = pytz.timezone("Australia/Sydney")

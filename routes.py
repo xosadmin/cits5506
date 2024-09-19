@@ -94,7 +94,7 @@ def submit_data():
         petID = data.get('petID')
         drinkAmount = data.get('drinkAmount')
         try:
-            query = PetDrink(eventID=eventID, date=date, petID=petID, drinkAmount=drinkAmount)
+            query = PetDrink(eventID=eventID, create_date=date, petID=petID, drinkAmount=drinkAmount)
             db.session.add(query)
             db.session.commit()
             return jsonify({"Status": True, "Details": "Record updated."}), 200

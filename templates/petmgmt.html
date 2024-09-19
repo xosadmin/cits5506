@@ -34,14 +34,12 @@
             <tr>
                 <th scope="col">Pet No.</th>
                 <th scope="col">Pet Name</th>
-                <th scope="col">Date/Time</th>
                 <th scope="col">De-register and delete pet</th>
             </tr>
           {% for resultitem in result %}
               <tr>
                   <td>{{ resultitem.petID }}</td>
                   <td>{{ resultitem.petName }}</td>
-                  <td>{{ resultitem.create_date }}</td>
                   <td><a href="/delpet/{resultitem.petID}" title="Delete Pet" class="DelPet">Deregister this pet</a></td>
               </tr>
           {% endfor %}

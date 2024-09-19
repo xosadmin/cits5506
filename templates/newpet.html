@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Pet - Smart Water Pet Feeder</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/newpet.js') }}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Smart Water Pet Feeder</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="/dashboard">Home</a></li>
+            <li><a href="/petmgmt">Pet Management</a></li>
+            <li><a href="/drinkhistory">Pet Drink History</a></li>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Register New Pet</h1>
+        <p>You must fill all fields below.</p>
+        <p>&nbsp;</p>
+        <div class="col-md-8 col-md-offset-2">
+            <form method="POST" action="/newpet" onsubmit="return checkInput()" class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="petID">Pet ID:</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="petID" placeholder="Enter Pet RFID Tag Number (At least 10 digits)" name="petID" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="petName">Pet Name:</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="petName" placeholder="Enter Pet Name (e.g. WhoDog)" name="petName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <div class="text-center">
+                <a href="/petmgmt" class="btn btn-danger">Cancel Registration</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

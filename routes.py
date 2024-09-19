@@ -140,6 +140,26 @@ def petmgmt():
     query = Pets.query.all()
     return render_template("petmgmt.html",result=query)
 
+@mainBluePrint.route("/addpet", methods=["GET","POST"])
+@login_required
+def addPet():
+    if request.method == "GET":
+        return render_template("newpet.html")
+    else:
+        petID = request.form.get('petID', None)
+        petName = request.form.get('petName', None)
+        if petID and petName:
+            try:
+                query = Pets(petID=petID,petName=petName)
+                db.session.add(query)
+                db.session.commit()
+                return "<script>alert('Pet registration successful.');window.location.href='/petmgmt';</script>"
+            except Exception as e:
+                print(f"Error during registration pet: {e}")
+                return "<script>alert('System error occured.');window.location.href='/addpet';</script>"
+        else:
+            return "<script>alert('Invalid Argument.');window.location.href='/addpet';</script>"
+
 @mainBluePrint.route("/delpet/<petid>", methods=["GET"])
 @login_required
 def delPet(petid):

@@ -4,7 +4,7 @@ function checkInput() {
     if (petID.length > 9) {
         return true;
     } else {
-        alert("PetID cannot be less than 9 digits.");
+        alert("PetID cannot be less than 10 digits.");
         return false;
     }
 }

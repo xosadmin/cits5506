@@ -29,18 +29,20 @@
         <p>&nbsp;</p>
         <button type="button" class="btn btn-default" id="regNewPet">Register a new pet</button>
         <p>&nbsp;</p>
-        <table class="table table-striped listcontents">
+        <table class="table table-striped listcontents" style="text-align: center;">
           <tbody>
             <tr>
                 <th scope="col">Pet No.</th>
                 <th scope="col">Pet Name</th>
+                <th scope="col">Last RFID Tag Swipe Date</th>
                 <th scope="col">De-register and delete pet</th>
             </tr>
           {% for resultitem in result %}
               <tr>
                   <td>{{ resultitem.petID }}</td>
                   <td>{{ resultitem.petName }}</td>
-                  <td><a href="/delpet/{resultitem.petID}" title="Delete Pet" class="DelPet">Deregister this pet</a></td>
+                  <td>{{ resultitem.lastTagDate }}</td>
+                  <td><a href="/delpet/{{resultitem.petID}}" title="Delete Pet" class="DelPet">Deregister and Delete this pet</a></td>
               </tr>
           {% endfor %}
           </tbody>

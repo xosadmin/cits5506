@@ -13,7 +13,8 @@ INSERT INTO `users` VALUES ("0", "admin", MD5("admin"));
 -- Create `pets` table
 CREATE TABLE `pets` (
     `petID` VARCHAR(256) PRIMARY KEY,
-    `petName` VARCHAR(80) NOT NULL
+    `petName` VARCHAR(80) NOT NULL,
+    `lastTagDate` VARCHAR(100) NOT NULL
 );
 
 -- Create the `turbidity` table

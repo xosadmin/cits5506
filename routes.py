@@ -96,6 +96,7 @@ def submit_data():
         try:
             query = PetDrink(eventID=eventID, create_date=date, petID=petID, drinkAmount=drinkAmount)
             db.session.add(query)
+            db.session.execute(update(Pets).where(Pets.petID == petID).values(lastTagDate=date))
             db.session.commit()
             return jsonify({"Status": True, "Details": "Record updated."}), 200
         except Exception as e:

@@ -1,6 +1,6 @@
 from flask import Blueprint, current_app, jsonify, request, render_template, url_for, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from sqlalchemy import and_
+from sqlalchemy import and_,delete,update
 from models.sqlmodel import *
 from utils import uuidGen, getTime, md5Calc
 from conf import sysinfo, mqttinfo
@@ -75,6 +75,15 @@ def mqtt_data_view():
 def conn_data_view():
     return jsonify(wificonn)
 
+@mainBluePrint.route("/getpetdata/<petid>", methods=["GET"])
+def getPetData(petid):
+    query = Pets.query.filter(Pets.petID == petid).first()
+    if query:
+        result = {"Status":True,"PetID": petid, "PetName":query.petName}
+    else:
+        result = {"Status": False}
+    return jsonify(result)
+
 @mainBluePrint.route('/addpetdrink', methods=['POST'])
 def submit_data():
     global timezone
@@ -128,7 +137,21 @@ def dashboard():
 @mainBluePrint.route("/petmgmt")
 @login_required
 def petmgmt():
-    return render_template("petmgmt.html")
+    query = Pets.query.all()
+    return render_template("petmgmt.html",result=query)
+
+@mainBluePrint.route("/delpet/<petid>", methods=["GET"])
+@login_required
+def delPet(petid):
+    try:
+        db.session.execute(delete(PetDrink).filter(PetDrink.petID == petid))
+        db.session.execute(delete(Pets).filter(Pets.petID == petid))
+        db.session.commit()
+        return "<script>alert('Pet delete successful.');window.location.href='/petmgmt';</script>"
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error when delete pet: {e}")
+        return "<script>alert('System error occured. Modification reverted.');window.location.href='/petmgmt';</script>"
 
 @mainBluePrint.route("/drinkhistory")
 @login_required

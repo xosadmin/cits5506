@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/petmgmt.js') }}"></script>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -25,7 +26,27 @@
     </nav>
     <div style="width: 80%; margin-left: auto; margin-right: auto;">
         <h1>Pet Management</h1>
-
+        <p>&nbsp;</p>
+        <button type="button" class="btn btn-default" id="regNewPet">Register a new pet</button>
+        <table class="table table-striped listcontents">
+          <tbody>
+            <tr>
+                <th scope="col">Pet No.</th>
+                <th scope="col">Pet Name</th>
+                <th scope="col">Date/Time</th>
+                <th scope="col">De-register and delete pet</th>
+            </tr>
+          {% for resultitem in result %}
+              <tr>
+                  <td>{{ resultitem.petID }}</td>
+                  <td>{{ resultitem.petName }}</td>
+                  <td>{{ resultitem.create_date }}</td>
+                  <td><a href="/delpet/{resultitem.petID}" title="Delete Pet" class="DelPet">Deregister this pet</a></td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+      <p style="text-align: center;">Note: The Pet ID is your RFID tag ID. </p>
     </div>
 </body>
 </html>

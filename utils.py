@@ -26,7 +26,8 @@ def randomName():
     return names.get_full_name()
 
 def calcNormalDrink(weight):
-    result = 40 * (weight ** 0.75)
+    floatweight = float(weight)
+    result = 40 * (floatweight ** 0.75)
     return f'{result:.2f}'
 
 def sortEventSheet(query):

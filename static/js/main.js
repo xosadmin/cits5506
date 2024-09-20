@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('IntakeAnalysis').addEventListener('click', function() {
-        triggerAction('dailyanalysis')
+        triggerAction('dailyanalysis');
     });
 
     document.getElementById('ResetFeeder').addEventListener('click', function() {

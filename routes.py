@@ -74,8 +74,10 @@ def calculate_daily_drink():
         for petID, total_drink in results:
             pet = db.session.query(Pets).filter_by(petID=petID).first()
             if pet:
-                threadsholdHigh = calcNormalDrink(pet.weight) * 1.1
-                threadsholdLow = calcNormalDrink(pet.weight) * 0.9
+                petWeight = float(pet.weight)
+
+                threadsholdHigh = calcNormalDrink(petWeight) * 1.1
+                threadsholdLow = calcNormalDrink(petWeight) * 0.9
 
                 query = None
                 Criticalquery = None

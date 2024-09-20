@@ -255,9 +255,9 @@
                             weightHistory.shift();
                         }
 
-                        if (data.turbiditysensor <= 1) {
+                        if (data.turbiditysensor <= 1500) {
                             document.getElementById("water_quality_bowl").innerHTML = "<b>Good</b>";
-                        } else if (data.turbiditysensor > 1 && data.turbiditysensor <= 5) {
+                        } else if (data.turbiditysensor > 1500 && data.turbiditysensor <= 2100) {
                             document.getElementById("water_quality_bowl").innerHTML = "<b>Fair</b>";
                         } else {
                             document.getElementById("water_quality_bowl").innerHTML = "<b>Bad or unknown</b>";

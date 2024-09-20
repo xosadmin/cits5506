@@ -76,8 +76,8 @@ def calculate_daily_drink():
             if pet:
                 petWeight = float(pet.weight)
 
-                threadsholdHigh = calcNormalDrink(petWeight) * 1.1
-                threadsholdLow = calcNormalDrink(petWeight) * 0.9
+                threadsholdHigh = float(calcNormalDrink(petWeight)) * 1.1
+                threadsholdLow = float(calcNormalDrink(petWeight)) * 0.9
 
                 query = None
                 Criticalquery = None

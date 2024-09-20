@@ -24,3 +24,11 @@ def md5Calc(plainText):
 
 def randomName():
     return names.get_full_name()
+
+def calcNormalDrink(weight):
+    result = 40 * (weight ** 0.75)
+    return float(f'{result:.2f}')
+
+def sortEventSheet(query):
+    result = [item.petID for item in query]
+    return result

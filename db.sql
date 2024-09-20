@@ -14,6 +14,8 @@ INSERT INTO `users` VALUES ("0", "admin", MD5("admin"));
 CREATE TABLE `pets` (
     `petID` VARCHAR(256) PRIMARY KEY,
     `petName` VARCHAR(80) NOT NULL,
+    `weight` FLOAT NOT NULL DEFAULT 0.00,
+    `normalDrinkValue` FLOAT NOT NULL DEFAULT 0.00,
     `lastTagDate` VARCHAR(100) NOT NULL
 );
 
@@ -45,4 +47,14 @@ CREATE TABLE `petdrink` (
     `create_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `drinkAmount` FLOAT NOT NULL DEFAULT 0.00,
     CONSTRAINT petdrinkFK1 FOREIGN KEY (`petID`) REFERENCES `pets`(`petID`)
+);
+
+CREATE TABLE noticeEvent (
+    eventID VARCHAR(256) PRIMARY KEY,
+    petID VARCHAR(256) NOT NULL,
+    eventType VARCHAR(20) NOT NULL DEFAULT 'None',
+    create_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    eventCritical VARCHAR(80) NOT NULL DEFAULT 'Notice',
+    eventDetail VARCHAR(120) NOT NULL DEFAULT 'None',
+    CONSTRAINT neFK1 FOREIGN KEY (petID) REFERENCES pets(petID)
 );

@@ -1,13 +1,14 @@
 from flask import Blueprint, current_app, jsonify, request, render_template, url_for, redirect
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from sqlalchemy import and_,delete,update
+from sqlalchemy import and_,delete,update,func
 from models.sqlmodel import *
-from utils import uuidGen, getTime, md5Calc
+from utils import uuidGen, getTime, md5Calc, calcNormalDrink, sortEventSheet
 from conf import sysinfo, mqttinfo
 from models.mqtt import mqtt_data
 from models.wificonn import wificonn
 import logging
 import paho.mqtt.client as mqtt
+from datetime import datetime, timedelta
 
 login_manager = LoginManager()
 logging.basicConfig(
@@ -40,9 +41,90 @@ def send_mqtt_message(topic, payload):
     else:
         return True
 
+@mainBluePrint.route("/dailyanalysis")
+def calculate_daily_drink():
+    try:
+        results = db.session.query(
+            PetDrink.petID,
+            func.sum(PetDrink.drinkAmount).label('total_drink')
+        ).group_by(PetDrink.petID).all()
+
+        nowTime = datetime.now(timezone).strftime("%d/%m/%Y")
+        two_days_ago = datetime.now(timezone) - timedelta(days=2)
+
+        eventListMore = db.session.query(
+            noticeableEvent.petID, 
+            func.count(noticeableEvent.eventID).label('event_count')
+        ).filter(and_(
+            noticeableEvent.create_date == two_days_ago.strftime("%d/%m/%Y"),
+            noticeableEvent.eventType == "DrinkMore"
+        )).group_by(noticeableEvent.petID).all()
+
+        eventListLess = db.session.query(
+            noticeableEvent.petID, 
+            func.count(noticeableEvent.eventID).label('event_count')
+        ).filter(and_(
+            noticeableEvent.create_date == two_days_ago.strftime("%d/%m/%Y"),
+            noticeableEvent.eventType == "DrinkLess"
+        )).group_by(noticeableEvent.petID).all()
+
+        potentialMoreNotify = sortEventSheet(eventListMore)
+        potentialLessNotify = sortEventSheet(eventListLess)
+
+        for petID, total_drink in results:
+            pet = db.session.query(Pets).filter_by(petID=petID).first()
+            if pet:
+                threadsholdHigh = pet.normalDrinkValue * 1.1
+                threadsholdLow = pet.normalDrinkValue * 0.9
+
+                query = None
+                Criticalquery = None
+
+                if total_drink > threadsholdHigh:
+                    query = noticeableEvent(
+                        petID=petID,
+                        eventType="DrinkMore",
+                        create_date=nowTime,
+                        eventDetail=f"Pet {petID} has exceeded the normal drink value."
+                    )
+                    if petID in potentialMoreNotify:
+                        Criticalquery = noticeableEvent(
+                            petID=petID,
+                            eventType="DrinkMore",
+                            eventCritical="Critical",
+                            create_date=nowTime,
+                            eventDetail=f"Pet {petID} has exceeded the normal drink value more than 3 days. Perhaps potential disease."
+                        )
+                elif total_drink < threadsholdLow:
+                    query = noticeableEvent(
+                        petID=petID,
+                        eventType="DrinkLess",
+                        create_date=nowTime,
+                        eventDetail=f"Pet {petID} has lower than normal drink value."
+                    )
+                    if petID in potentialLessNotify:
+                        Criticalquery = noticeableEvent(
+                            petID=petID,
+                            eventType="DrinkLess",
+                            eventCritical="Critical",
+                            create_date=nowTime,
+                            eventDetail=f"Pet {petID} has exceeded the normal drink value more than 3 days. Perhaps potential disease."
+                        )
+                else:
+                    print(f"Pet {petID} is within the normal range.")
+                if query:
+                    db.session.add(query)
+                if Criticalquery:
+                    db.session.add(Criticalquery)
+        db.session.commit()
+        return jsonify({"Status": True, "Details": "Done on daily drink analysis"})
+    except Exception as e:
+        print(f"Error during drink analysis: {e}")
+        return jsonify({"Status": False, "Details": str(e)})
+
 @mainBluePrint.route("/petinfo/<rfid>", methods=["GET"])
 def getPetInfo(rfid):
-    query = Pets.query.filter(Pets.rfid == rfid).first()
+    query = Pets.query.filter(Pets.petID == rfid).first()
     if query:
         return jsonify({"petID": query.petID, "lastDrink": query.lastDrink})
     else:
@@ -79,7 +161,7 @@ def conn_data_view():
 def getPetData(petid):
     query = Pets.query.filter(Pets.petID == petid).first()
     if query:
-        result = {"Status":True,"PetID": petid, "PetName":query.petName}
+        result = {"Status":True,"PetID": petid, "PetName":query.petName, "PetWeight":query.weight, "NormalDrinkValue":query.normalDrinkValue}
     else:
         result = {"Status": False}
     return jsonify(result)
@@ -149,9 +231,11 @@ def addPet():
     else:
         petID = request.form.get('petID', None)
         petName = request.form.get('petName', None)
-        if petID and petName:
+        petWeight = request.form.get('petWeight', None)
+        if petID and petName and petWeight:
             try:
-                query = Pets(petID=petID,petName=petName)
+                normalDrinkValue = float(calcNormalDrink(petWeight))
+                query = Pets(petID=petID,petName=petName,weight=petWeight,normalDrinkValue=normalDrinkValue)
                 db.session.add(query)
                 db.session.commit()
                 return "<script>alert('Pet registration successful.');window.location.href='/petmgmt';</script>"

@@ -141,10 +141,13 @@ def changewater(action):
     elif action == "restartfeeder":
         route = "restartfeeder"
     elif action == "dailyanalysis":
-        route = None
+        route = "dailyanalysis"
         calculate_daily_drink()
     if route:
-        resp = send_mqtt_message("remotecommand",route)
+        if route != "dailyanalysis":
+            resp = send_mqtt_message("remotecommand",route)
+        else:
+            resp = "1"
         if resp:
             return jsonify({"Status": True, "Details": "Command successfully sent"})
         else:

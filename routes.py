@@ -237,7 +237,7 @@ def addPet():
         petWeight = request.form.get('petWeight', None)
         if petID and petName and petWeight:
             try:
-                normalDrinkValue = float(calcNormalDrink(petWeight))
+                normalDrinkValue = calcNormalDrink(petWeight)
                 query = Pets(petID=petID,petName=petName,weight=petWeight,normalDrinkValue=normalDrinkValue)
                 db.session.add(query)
                 db.session.commit()

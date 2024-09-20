@@ -74,13 +74,13 @@ def calculate_daily_drink():
         for petID, total_drink in results:
             pet = db.session.query(Pets).filter_by(petID=petID).first()
             if pet:
-                threadsholdHigh = pet.normalDrinkValue * 1.1
-                threadsholdLow = pet.normalDrinkValue * 0.9
+                threadsholdHigh = calcNormalDrink(pet.weight) * 1.1
+                threadsholdLow = calcNormalDrink(pet.weight) * 0.9
 
                 query = None
                 Criticalquery = None
 
-                if total_drink > threadsholdHigh:
+                if float(total_drink) > float(threadsholdHigh):
                     query = noticeableEvent(
                         petID=petID,
                         eventType="DrinkMore",
@@ -95,7 +95,7 @@ def calculate_daily_drink():
                             create_date=nowTime,
                             eventDetail=f"Pet {petID} has exceeded the normal drink value more than 3 days. Perhaps potential disease."
                         )
-                elif total_drink < threadsholdLow:
+                elif float(total_drink) < float(threadsholdLow):
                     query = noticeableEvent(
                         petID=petID,
                         eventType="DrinkLess",

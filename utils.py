@@ -27,7 +27,7 @@ def randomName():
 
 def calcNormalDrink(weight):
     result = 40 * (weight ** 0.75)
-    return float(f'{result:.2f}')
+    return f'{result:.2f}'
 
 def sortEventSheet(query):
     result = [item.petID for item in query]

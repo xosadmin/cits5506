@@ -140,6 +140,9 @@ def changewater(action):
         route = "refillwater"
     elif action == "restartfeeder":
         route = "restartfeeder"
+    elif action == "dailyanalysis":
+        route = None
+        calculate_daily_drink()
     if route:
         resp = send_mqtt_message("remotecommand",route)
         if resp:
@@ -257,6 +260,24 @@ def delPet(petid):
         db.session.rollback()
         print(f"Error when delete pet: {e}")
         return "<script>alert('System error occured. Modification reverted.');window.location.href='/petmgmt';</script>"
+    
+@mainBluePrint.route("/rotatelog/<rotatetype>", methods=["GET"])
+@login_required
+def delPet(rotatetype):
+    try:
+        if rotatetype == "drinkhistory":
+            db.session.query(PetDrink).delete()
+            db.session.commit()
+        elif rotatetype == "eventlist":
+            db.session.query(noticeableEvent).delete()
+            db.session.commit()
+        else:
+            return "<script>alert('Unknown type.');window.location.href='/dashboard';</script>"
+        return "<script>alert('Rotate successful.');history.back();</script>"
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error when delete pet: {e}")
+        return "<script>alert('System error occured. Modification reverted.');window.location.href='/dashboard';</script>"
 
 @mainBluePrint.route("/drinkhistory")
 @login_required
@@ -268,6 +289,18 @@ def drinkhistory():
         PetDrink.drinkAmount
     ).join(Pets, PetDrink.petID == Pets.petID).order_by(PetDrink.drinkAmount.desc()).all()
     return render_template("petdrinkhistory.html",result=query)
+
+@mainBluePrint.route("/noticeevent")
+@login_required
+def noticeevent():
+    query = db.session.query(
+        noticeableEvent.petID,
+        Pets.petName,
+        noticeableEvent.create_date,
+        noticeableEvent.eventCritical,
+        noticeableEvent.eventDetail
+    ).join(Pets, noticeableEvent.petID == Pets.petID).order_by(noticeableEvent.create_date.desc()).all()
+    return render_template("eventlist.html",result=query)
 
 @mainBluePrint.route("/logout")
 @login_required

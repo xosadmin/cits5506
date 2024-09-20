@@ -263,7 +263,7 @@ def delPet(petid):
     
 @mainBluePrint.route("/rotatelog/<rotatetype>", methods=["GET"])
 @login_required
-def delPet(rotatetype):
+def rotatelog(rotatetype):
     try:
         if rotatetype == "drinkhistory":
             db.session.query(PetDrink).delete()

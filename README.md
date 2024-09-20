@@ -8,7 +8,9 @@ Prerequisite: You have a Linux OS VM
 4. Finish ``conf.py`` with your DB information (MySQL or mariadb is supported)
 5. Use command: ``flask run``
 6. Enjoy~
-
+  
+It is recommend to add http://<your-address>/dailyanalysis to crontab and run per minute.
+  
 #### Also, you can use docker image ``xosadmin/docker_flask`` to run this project.
 For more details, please visit https://github.com/xosadmin/docker_flask
   

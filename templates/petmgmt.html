@@ -36,6 +36,7 @@
                 <th scope="col">Pet No.</th>
                 <th scope="col">Pet Name</th>
                 <th scope="col">Pet weight</th>
+                <th scope="col">Calculated daily normal drink (ml)</th>
                 <th scope="col">Last RFID Tag Swipe Date</th>
                 <th scope="col">De-register and delete pet</th>
             </tr>
@@ -44,6 +45,7 @@
                   <td>{{ resultitem.petID }}</td>
                   <td>{{ resultitem.petName }}</td>
                   <td>{{ resultitem.weight }}</td>
+                  <td>{{ resultitem.normalDrinkValue }}</td>
                   <td>{{ resultitem.lastTagDate }}</td>
                   <td><a href="/delpet/{{resultitem.petID}}" title="Delete Pet" class="DelPet">Deregister and Delete this pet</a></td>
               </tr>

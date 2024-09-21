@@ -7,7 +7,7 @@ dbinfo = {
 }
 
 sysinfo = {
-    "timezone": "Australia/Sydney",
+    "timezone": "Asia/Singapore",
 }
 
 mqttinfo = {

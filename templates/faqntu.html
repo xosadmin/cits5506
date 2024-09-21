@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Smart Water Pet Feeder</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/petmgmt.js') }}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Smart Water Pet Feeder</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="/dashboard">Home</a></li>
+            <li><a href="/petmgmt">Pet Management</a></li>
+            <li><a href="/drinkhistory">Pet Drink History</a></li>
+            <li><a href="/noticeevent">Noticeable Events</a></li>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+    </nav>
+    <div style="width: 80%; margin-left: auto; margin-right: auto;">
+        <h1>How do NTU calculated?</h1>
+        <p>&nbsp;</p>
+        <p>Turbidity (measured in NTU) refers to the cloudiness or haziness of water caused by suspended particles. 
+            High turbidity levels indicate poor water quality, which can harm pets' health. Turbid water may contain harmful bacteria, viruses, and pollutants, increasing the risk of gastrointestinal infections and other illnesses. 
+            For pets, clean water is essential to maintaining hydration and overall well-being. Regular monitoring of turbidity is crucial to ensuring safe drinking water. If NTU levels exceed 5, it may signal contamination, making it unsafe for pets to consume.</p>
+        <p>&nbsp;</p>
+        <h1>How do smart pet water feeder analysis NTU value?</h1>
+        <p>&nbsp;</p>
+        <p>The platfrom strictly follow global standard to measure the NTU value. Here's the sheet regarding how to measure if water is safe via NTU.</p>
+        <table class="table table-striped listcontents">
+            <thead>
+                <th>NTU Value</th>
+                <th>Safety level</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td> <= 1.00 </td>
+                    <td>Safe and recommend to drink</td>
+                </tr>
+                <tr>
+                    <td> >= 1.00 but < 5 </td>
+                    <td>Fair, good to drink</td>
+                </tr>
+                <tr>
+                    <td> > 5 </td>
+                    <td>Unsafe to drink</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

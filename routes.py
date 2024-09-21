@@ -307,6 +307,16 @@ def noticeevent():
     ).join(Pets, noticeableEvent.petID == Pets.petID).order_by(noticeableEvent.create_date.desc()).all()
     return render_template("eventlist.html",result=query)
 
+@mainBluePrint.route("/faq/<flag>", methods=["GET"])
+@login_required
+def faq(flag):
+    if flag == "normaldrink":
+        return render_template("faqnormaldrink.html")
+    elif flag == "ntu":
+        return render_template("faqntu.html")
+    else:
+        return "<script>alert('Cannot find the faq document.');window.location.href='/dashboard';</script>"
+
 @mainBluePrint.route("/logout")
 @login_required
 def logout():

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Smart Water Pet Feeder</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/petmgmt.js') }}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Smart Water Pet Feeder</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="/dashboard">Home</a></li>
+            <li><a href="/petmgmt">Pet Management</a></li>
+            <li><a href="/drinkhistory">Pet Drink History</a></li>
+            <li><a href="/noticeevent">Noticeable Events</a></li>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+    </nav>
+    <div style="width: 80%; margin-left: auto; margin-right: auto;">
+        <h1>How do daily normal drink calculated?</h1>
+        <p>&nbsp;</p>
+        <p>According to Companion Hospital, Normal water drinking for a typical, 
+             pet (e.g. dog) can be calculated using this formula: 140 x (body weight in kg) ^ 0.75, giving the result in milliliters per day. 
+            If your pet is drinking more than 10% of normal threadshold for 3 days, it's a sign that something might be wrong, and a vet visit is advisable.</p>
+        <p>&nbsp;</p>
+        <h1>What happened if pet always drink more or less water?</h1>
+        <p>&nbsp;</p>
+        <p>This can be happened by multiple reasons, here are common reasons:</p>
+        <ul>
+            <li>Kidney (renal) dysfunction</li>
+            <li>Liver (hepatic) disease</li>
+            <li>Diabetes mellitus (commonly referred to as sugar diabetes)</li>
+            <li>Diabetes insipidus (also known as water diabetes)</li>
+            <li>Hyperthyroidism (overactive thyroid) in cats</li>
+            <li>Pyometra, an infection of the uterus in animals that are not spayed</li>
+            <li>Cushing’s disease, which involves an overproduction of the natural steroid, cortisol, by the adrenal glands</li>
+            <li>Addison’s disease, characterised by reduced steroid production by the adrenal glands</li>
+            <li>Urinary tract infections</li>
+            <li>Elevated calcium levels, occasionally linked with cancer</li>
+            <li>Behavioural problems leading to a psychological obsession with drinking excessive amounts of water (psychogenic polydipsia)</li>
+            <li>Compensatory polydipsia, which can occur after significant fluid loss due to vomiting or diarrhoea</li>
+        </ul>        
+        <p>You can monitor pet water intake by this platform. If you fill any unusual of pet water intake, please seek medical advice.</p>
+    </div>
+</body>
+</html>

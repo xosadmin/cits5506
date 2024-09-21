@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 mqtt_client = mqtt.Client()
 mainBluePrint = Blueprint('mainBluePrint', __name__)
-timezone = pytz.timezone("Australia/Sydney")
+timezone = pytz.timezone("Australia/Perth")
 
 @login_manager.user_loader
 def load_user(user_id):

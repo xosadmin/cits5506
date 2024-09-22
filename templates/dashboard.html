@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Smart Water Pet Feeder</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <!-- Google Charts loader -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -32,12 +33,9 @@
             margin-right: auto;
             display: none;
         }
-        canvas {
-            display: block;
-            max-width: 100px;
-            width: 600px;
+        .chart {
+            width: 100%;
             height: 400px;
-            box-sizing: border-box;
         }
     </style>
 </head>
@@ -58,7 +56,7 @@
     </nav>
     <div id="notification" style="width: 80%; margin-left: auto; margin-right: auto;">
         <div class="alert alert-warning" id="notifyWarn">
-            <strong>Notice: </strong>Please wait while loading dashboard data
+            <strong>Notice: </strong>Please wait while loading dashboard data and graph.
         </div>
     </div>
     <div style="width: 80%; margin-left: auto; margin-right: auto;">
@@ -69,281 +67,172 @@
         <div class="chart-container">
             <div class="chart-item-large">
                 <h2>Summary</h2>
-                <canvas id="summaryChart"></canvas>
+                <div id="summaryChart" class="chart"></div>
             </div>
-            <div class="chart-sub-container">
-                <div class="chart-item">
-                    <h2>Water Level percentage in reservoir</h2>
-                    <div class="progress"></div>
-                        <div id="reservWaterLeft" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                          0%
-                        </div>
-                    </div>
-                    <p>&nbsp;</p>
-                    <p>Estimate water tank Remaining Date: {{estimate_water_level_remain_days}} Day(s)</p>
-                    <p>&nbsp;</p>
-                    <h3>Usage Chart</h3>
-                    <canvas id="waterlevelChart"></canvas>
-                </div>
-                <div class="chart-item">
-                    <h2>Turbidity (NTU Value)</h2>
-                    <p>Water quality in bowl: <span id="water_quality_bowl"><b>Waiting for data</b></span></p>
-                    <p><a href="/faq/ntu" title="NTU FAQ" target="_blank">FAQ: How does turbidity related to water quality?</a></p>
-                    <canvas id="turbChart"></canvas>
-                </div>
-                <div class="chart-item">
-                    <h2>Bowl Water left percentage</h2>
-                    <div class="progress">
-                        <div id="bowlWaterLeft" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                          0%
-                        </div>
-                    </div>
-                    <canvas id="weightChart"></canvas>
-                </div>
+        </div>
+
+        <div class="chart-sub-container">
+            <div class="chart-item">
+                <h2>Water Level percentage in reservoir</h2>
+                <div class="progress"></div>
+                <div id="reservWaterLeft" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
+                <p>&nbsp;</p>
+                <p>Estimate water tank Remaining Date: {{estimate_water_level_remain_days}} Day(s)</p>
+                <p>&nbsp;</p>
+                <h3>Usage Chart</h3>
+                <div id="waterlevelChart" class="chart"></div>
             </div>
-            <div class="chart-container">
-                <div class="chart-item-large">
-                    <h2>Smart Water Feeder Connection</h2>
-                    <p>&nbsp;</p>
-                    <p>Connection Type: <span id="conntype"> </span></p>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>IP Address</th>
-                                <th>RSSI</th>
-                                <th>Feeder Last Seen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="ipaddrdisplay"></td>
-                                <td><span id="rssidisplay"></span> (<span id="connquality"></span>)</td>
-                                <td>{{ wificonn.lastseen }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="chart-item">
+                <h2>Turbidity (NTU Value)</h2>
+                <p>Water quality in bowl: <span id="water_quality_bowl"><b>Waiting for data</b></span></p>
+                <p><a href="/faq/ntu" title="NTU FAQ" target="_blank">FAQ: How does turbidity relate to water quality?</a></p>
+                <div id="turbChart" class="chart"></div>
+            </div>
+            <div class="chart-item">
+                <h2>Bowl Water left percentage</h2>
+                <div class="progress">
+                    <div id="bowlWaterLeft" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
                 </div>
+                <div id="weightChart" class="chart"></div>
             </div>
         </div>
     </div>
-        <p>&nbsp;</p>
 
-        <div style="margin-left: auto; margin-right: auto; width: 60%;">
-            <h2>Remote control options</h2>
-            <button type="button" id="RefreshPage" class="btn">Manual Refresh this page</button>
-            <button type="button" id="ChangeWater" class="btn btn-primary">Change Water in bowl</button>
-            <button type="button" id="RefillWater" class="btn btn-primary">Refill Water in bowl</button>
-            <button type="button" id="IntakeAnalysis" class="btn btn-primary">Manual Trigger water intake analysis</button>
-            <button type="button" id="ResetFeeder" class="btn btn-danger">Restart Water Feeder</button>
-        </div>
-        <script>
-            const waterlevelCtx = document.getElementById('waterlevelChart').getContext('2d');
-            const waterlevelChart = new Chart(waterlevelCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Water Level'],
-                    datasets: [{
-                        label: 'Water Level',
-                        data: [],
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+    <p>&nbsp;</p>
+
+    <div style="margin-left: auto; margin-right: auto; width: 60%;">
+        <h2>Remote control options</h2>
+        <button type="button" id="RefreshPage" class="btn">Manual Refresh this page</button>
+        <button type="button" id="ChangeWater" class="btn btn-primary">Change Water in bowl</button>
+        <button type="button" id="RefillWater" class="btn btn-primary">Refill Water in bowl</button>
+        <button type="button" id="IntakeAnalysis" class="btn btn-primary">Manual Trigger water intake analysis</button>
+        <button type="button" id="ResetFeeder" class="btn btn-danger">Restart Water Feeder</button>
+    </div>
+
+    <p>&nbsp;</p>
+    <script>
+        // Google Charts loader
+        google.charts.load('current', {'packages':['corechart']});
+
+        // Variables for storing chart data
+        let waterlevelHistory = [];
+        let weightHistory = [];
+        let turbHistory = [];
+        let timeLabels = [];
+
+        // Function to draw charts
+        function drawCharts() {
+            // Draw Water Level Chart
+            let waterlevelData = google.visualization.arrayToDataTable([
+                ['Time', 'Water Level'],
+                ...timeLabels.map((time, index) => [time, waterlevelHistory[index]])
+            ]);
+            let waterlevelOptions = {title: 'Water Level', curveType: 'function', legend: { position: 'bottom' }};
+            let waterlevelChart = new google.visualization.LineChart(document.getElementById('waterlevelChart'));
+            waterlevelChart.draw(waterlevelData, waterlevelOptions);
+
+            // Draw Turbidity Chart
+            let turbData = google.visualization.arrayToDataTable([
+                ['Time', 'Turbidity'],
+                ...timeLabels.map((time, index) => [time, turbHistory[index]])
+            ]);
+            let turbOptions = {title: 'Turbidity', curveType: 'function', legend: { position: 'bottom' }};
+            let turbChart = new google.visualization.LineChart(document.getElementById('turbChart'));
+            turbChart.draw(turbData, turbOptions);
+
+            // Draw Weight Chart
+            let weightData = google.visualization.arrayToDataTable([
+                ['Time', 'Weight'],
+                ...timeLabels.map((time, index) => [time, weightHistory[index]])
+            ]);
+            let weightOptions = {title: 'Bowl Weight', curveType: 'function', legend: { position: 'bottom' }};
+            let weightChart = new google.visualization.LineChart(document.getElementById('weightChart'));
+            weightChart.draw(weightData, weightOptions);
+
+            // Draw Summary Chart
+            let summaryData = google.visualization.arrayToDataTable([
+                ['Time', 'Water Level', 'Turbidity', 'Weight'],
+                ...timeLabels.map((time, index) => [time, waterlevelHistory[index], turbHistory[index], weightHistory[index]])
+            ]);
+            let summaryOptions = {title: 'Summary', curveType: 'function', legend: { position: 'bottom' }};
+            let summaryChart = new google.visualization.LineChart(document.getElementById('summaryChart'));
+            summaryChart.draw(summaryData, summaryOptions);
+        }
+
+        // Periodic data fetch and update charts
+        setInterval(() => {
+            fetch('/mqtt_data')
+                .then(response => response.json())
+                .then(data => {
+                    let currentTime = new Date().toLocaleTimeString();
+
+                    let waterLevel = parseFloat(data.waterlevelreservoir);
+                    let bowlPercentage = parseFloat(data.waterlevelbowlpercentage);
+                    let turbidity = parseFloat(data.turbiditysensor);
+
+                    waterlevelHistory.push(waterLevel);
+                    weightHistory.push(bowlPercentage);
+                    turbHistory.push(turbidity);
+                    timeLabels.push(currentTime);
+
+                    if (waterlevelHistory.length > 100) {
+                        waterlevelHistory.shift();
+                        weightHistory.shift();
+                        turbHistory.shift();
+                        timeLabels.shift();
                     }
-                }
-            });
 
-            const weightCtx = document.getElementById('weightChart').getContext('2d');
-            const weightChart = new Chart(weightCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Weight'],
-                    datasets: [{
-                        label: 'Weight',
-                        data: [],
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                    google.charts.setOnLoadCallback(drawCharts);
+
+                    if (isNaN(data.turbiditysensor)) {
+                        document.getElementById("water_quality_bowl").innerHTML = "<b>No sensor detected</b>";
+                        document.getElementById("notifyWarn").style.display = "block";
+                    } else if (data.turbiditysensor <= 1) {
+                        document.getElementById("water_quality_bowl").innerHTML = "<b>Good</b>";
+                        document.getElementById("notifyWarn").style.display = "none";
+                    } else if (data.turbiditysensor <= 4.9) {
+                        document.getElementById("water_quality_bowl").innerHTML = "<b>Fair</b>";
+                        document.getElementById("notifyWarn").style.display = "none";
+                    } else {
+                        document.getElementById("water_quality_bowl").innerHTML = "<b>Bad</b>";
+                        document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Change water in bowl is necessary.";
+                        document.getElementById("notifyWarn").style.display = "block";
                     }
-                }
-            });
 
-            const turbCtx = document.getElementById('turbChart').getContext('2d');
-            const turbChart = new Chart(turbCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Turbidity'],
-                    datasets: [{
-                        label: 'Turbidity',
-                        data: [],
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                    bowlWaterElement = document.getElementById("bowlWaterLeft");
+                    reservWaterLeftIcon = document.getElementById("reservWaterLeft");
+
+                    reservWaterLeftIcon.style.width = data.waterlevelreservoir + "%";
+                    reservWaterLeftIcon.setAttribute("aria-valuenow", data.waterlevelreservoir);
+                    reservWaterLeftIcon.innerHTML = data.waterlevelreservoir + "%";
+
+                    bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
+                    bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
+                    bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";
+
+                    reservWaterLeftIcon.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
+                    bowlWaterElement.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
+
+                    if (data.waterlevelbowlpercentage < 40) {
+                        bowlWaterElement.classList.add('progress-bar-danger');
+                    } else if (data.waterlevelbowlpercentage < 70) {
+                        bowlWaterElement.classList.add('progress-bar-warning');
+                    } else {
+                        bowlWaterElement.classList.add('progress-bar-success');
                     }
-                }
-            });
 
-            const summaryCtx = document.getElementById('summaryChart').getContext('2d');
-            const summaryChart = new Chart(summaryCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Reservoir Water Level', 'Turbidity', 'Bowl Weight Percentage'],
-                    datasets: [{
-                        label: 'Reservoir Water Level',
-                        data: [],
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'Turbidity',
-                        data: [],
-                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    },
-                    {
-                        label: 'Weight Percentage',
-                        data: [],
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                    if (data.waterlevelreservoir < 40) {
+                        reservWaterLeftIcon.classList.add('progress-bar-danger');
+                    } else if (data.waterlevelreservoir < 70) {
+                        reservWaterLeftIcon.classList.add('progress-bar-warning');
+                    } else {
+                        reservWaterLeftIcon.classList.add('progress-bar-success');
                     }
-                }
-            });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }, 5000);
 
-            let waterlevelHistory = [];
-            let weightHistory = [];
-            let turbHistory = [];
-            let timeLabels = [];
-
-            setInterval(() => {
-                fetch('/mqtt_data')
-                    .then(response => response.json())
-                    .then(data => {
-                        let currentTime = new Date().toLocaleTimeString();
-
-                        waterlevelHistory.push(data.waterlevelreservoir);
-                        weightHistory.push(data.waterlevelbowlpercentage);
-                        turbHistory.push(data.turbiditysensor);
-                        timeLabels.push(currentTime); 
-
-                        if (waterlevelHistory.length > 100) {
-                            waterlevelHistory.shift();
-                            timeLabels.shift();
-                        }
-                        if (weightHistory.length > 100) {
-                            weightHistory.shift();
-                        }
-
-                        if (isNaN(data.turbiditysensor)) {
-                            document.getElementById("water_quality_bowl").innerHTML = "<b>No sensor detected</b>";
-                            document.getElementById("notifyWarn").style.display = "block";
-                        } else if (data.turbiditysensor <= 1) {
-                            document.getElementById("water_quality_bowl").innerHTML = "<b>Good</b>";
-                            document.getElementById("notifyWarn").style.display = "none";
-                        } else if (data.turbiditysensor <= 4.9) {
-                            document.getElementById("water_quality_bowl").innerHTML = "<b>Fair</b>";
-                            document.getElementById("notifyWarn").style.display = "none";
-                        } else {
-                            document.getElementById("water_quality_bowl").innerHTML = "<b>Bad</b>";
-                            document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Change water in bowl is necessary.";
-                            document.getElementById("notifyWarn").style.display = "block";
-                        }
-
-                        bowlWaterElement = document.getElementById("bowlWaterLeft");
-                        reservWaterLeftIcon = document.getElementById("reservWaterLeft");
-
-                        reservWaterLeftIcon.style.width = data.waterlevelreservoir + "%";
-                        reservWaterLeftIcon.setAttribute("aria-valuenow", data.waterlevelreservoir);
-                        reservWaterLeftIcon.innerHTML = data.waterlevelreservoir + "%";
-
-                        bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
-                        bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
-                        bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";
-
-                        reservWaterLeftIcon.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
-                        bowlWaterElement.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
-
-                        if (data.waterlevelbowlpercentage < 40) {
-                            bowlWaterElement.classList.add('progress-bar-danger');
-                        } else if (data.waterlevelbowlpercentage < 70) {
-                            bowlWaterElement.classList.add('progress-bar-warning');
-                        } else {
-                            bowlWaterElement.classList.add('progress-bar-success');
-                        }
-
-                        if (data.waterlevelreservoir < 40) {
-                            reservWaterLeftIcon.classList.add('progress-bar-danger');
-                        } else if (data.waterlevelreservoir < 70) {
-                            reservWaterLeftIcon.classList.add('progress-bar-warning');
-                        } else {
-                            reservWaterLeftIcon.classList.add('progress-bar-success');
-                        }
-
-                        waterlevelChart.data.labels = timeLabels;
-                        waterlevelChart.data.datasets[0].data = waterlevelHistory;
-                        waterlevelChart.update();
-
-                        weightChart.data.labels = timeLabels;
-                        weightChart.data.datasets[0].data = weightHistory;
-                        weightChart.update();
-
-                        turbChart.data.labels = timeLabels;
-                        turbChart.data.datasets[0].data = turbHistory;
-                        turbChart.update();
-
-                        summaryChart.data.labels = timeLabels;
-                        summaryChart.data.datasets[0].data = waterlevelHistory;
-                        summaryChart.data.datasets[1].data = turbHistory;
-                        summaryChart.data.datasets[2].data = weightHistory;
-                        summaryChart.update();
-                    })
-                    .catch(error => console.error('Error fetching data:', error));
-            }, 5000);
-
-            setInterval(() => {
+        setInterval(() => {
                 fetch('/conn_data')
                     .then(response => response.json())
                     .then(conndata => {
@@ -365,7 +254,6 @@
                     })
                     .catch(error => console.error('Error fetching data:', error));
             }, 2000);
-        </script>
-    </div>
+    </script>
 </body>
 </html>

@@ -70,7 +70,7 @@
             </div>
             <div class="chart-sub-container">
                 <div class="chart-item">
-                    <h2>Water Level</h2>
+                    <h2>Water Level in reservoir</h2>
                     <p>Estimate water tank Remaining Date: {{estimate_water_level_remain_days}} Day(s)</p>
                     <p>&nbsp;</p>
                     <h3>Usage Chart</h3>
@@ -83,7 +83,7 @@
                     <canvas id="turbChart"></canvas>
                 </div>
                 <div class="chart-item">
-                    <h2>Water Weight in bowl</h2>
+                    <h2>Water left in bowl</h2>
                     <canvas id="weightChart"></canvas>
                 </div>
             </div>
@@ -242,8 +242,8 @@
                     .then(data => {
                         let currentTime = new Date().toLocaleTimeString();
 
-                        waterlevelHistory.push(data.wastewaterlevel);
-                        weightHistory.push(data.weightBowl);
+                        waterlevelHistory.push(data.waterlevelreservoir);
+                        weightHistory.push(data.waterlevelbowlpercentage);
                         turbHistory.push(data.turbiditysensor);
                         timeLabels.push(currentTime); 
 

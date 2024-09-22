@@ -8,7 +8,10 @@ dbinfo = {
 
 sysinfo = {
     "timezone": "Asia/Singapore",
+    "bowlMaxWeight": "100"
 }
+
+# The max weight is in kg
 
 mqttinfo = {
     "brokerAddr": "",

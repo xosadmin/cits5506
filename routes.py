@@ -51,8 +51,9 @@ def calculate_daily_drink():
 
         nowTime = datetime.now(timezone).strftime("%d/%m/%Y")
         two_days_ago = datetime.now(timezone) - timedelta(days=2)
+        one_day_ago = datetime.now(timezone) - timedelta(days=1)
 
-        eventListMore = db.session.query(
+        eventListMoreTwoDays = db.session.query(
             noticeableEvent.petID, 
             func.count(noticeableEvent.eventID).label('event_count')
         ).filter(and_(
@@ -60,7 +61,7 @@ def calculate_daily_drink():
             noticeableEvent.eventType == "DrinkMore"
         )).group_by(noticeableEvent.petID).all()
 
-        eventListLess = db.session.query(
+        eventListLessTwoDays = db.session.query(
             noticeableEvent.petID, 
             func.count(noticeableEvent.eventID).label('event_count')
         ).filter(and_(
@@ -68,14 +69,31 @@ def calculate_daily_drink():
             noticeableEvent.eventType == "DrinkLess"
         )).group_by(noticeableEvent.petID).all()
 
-        potentialMoreNotify = sortEventSheet(eventListMore)
-        potentialLessNotify = sortEventSheet(eventListLess)
+        eventListMoreOneDay = db.session.query(
+            noticeableEvent.petID, 
+            func.count(noticeableEvent.eventID).label('event_count')
+        ).filter(and_(
+            noticeableEvent.create_date == one_day_ago.strftime("%d/%m/%Y"),
+            noticeableEvent.eventType == "DrinkMore"
+        )).group_by(noticeableEvent.petID).all()
+
+        eventListLessOneDay = db.session.query(
+            noticeableEvent.petID, 
+            func.count(noticeableEvent.eventID).label('event_count')
+        ).filter(and_(
+            noticeableEvent.create_date == one_day_ago.strftime("%d/%m/%Y"),
+            noticeableEvent.eventType == "DrinkLess"
+        )).group_by(noticeableEvent.petID).all()
+
+        potentialMoreNotifyTwoDays = sortEventSheet(eventListMoreTwoDays)
+        potentialLessNotifyTwoDays = sortEventSheet(eventListLessTwoDays)
+        potentialMoreNotifyOneDay = sortEventSheet(eventListMoreOneDay)
+        potentialLessNotifyOneDay = sortEventSheet(eventListLessOneDay)
 
         for petID, total_drink in results:
             pet = db.session.query(Pets).filter_by(petID=petID).first()
             if pet:
                 petWeight = float(pet.weight)
-
                 threadsholdHigh = float(calcNormalDrink(petWeight)) * 1.1
                 threadsholdLow = float(calcNormalDrink(petWeight)) * 0.9
 
@@ -89,13 +107,13 @@ def calculate_daily_drink():
                         create_date=nowTime,
                         eventDetail=f"Pet {petID} has exceeded the normal drink value."
                     )
-                    if petID in potentialMoreNotify:
+                    if petID in potentialMoreNotifyTwoDays and petID in potentialMoreNotifyOneDay:
                         Criticalquery = noticeableEvent(
                             petID=petID,
                             eventType="DrinkMore",
                             eventCritical="Critical",
                             create_date=nowTime,
-                            eventDetail=f"Pet {petID} has exceeded the normal drink value more than 3 days. Perhaps potential disease."
+                            eventDetail=f"Pet {petID} has exceeded the normal drink value for more than 2 days. Potential disease."
                         )
                 elif float(total_drink) < float(threadsholdLow):
                     query = noticeableEvent(
@@ -104,20 +122,22 @@ def calculate_daily_drink():
                         create_date=nowTime,
                         eventDetail=f"Pet {petID} has lower than normal drink value."
                     )
-                    if petID in potentialLessNotify:
+                    if petID in potentialLessNotifyTwoDays and petID in potentialLessNotifyOneDay:
                         Criticalquery = noticeableEvent(
                             petID=petID,
                             eventType="DrinkLess",
                             eventCritical="Critical",
                             create_date=nowTime,
-                            eventDetail=f"Pet {petID} has exceeded the normal drink value more than 3 days. Perhaps potential disease."
+                            eventDetail=f"Pet {petID} has had lower than normal drink value for more than 2 days. Potential disease."
                         )
                 else:
                     print(f"Pet {petID} is within the normal range.")
+
                 if query:
                     db.session.add(query)
                 if Criticalquery:
                     db.session.add(Criticalquery)
+
         db.session.commit()
         return jsonify({"Status": True, "Details": "Done on daily drink analysis"})
     except Exception as e:

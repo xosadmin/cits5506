@@ -279,7 +279,7 @@ def delPet(petid):
     try:
         db.session.execute(delete(PetDrink).filter(PetDrink.petID == petid))
         db.session.execute(delete(Pets).filter(Pets.petID == petid))
-        db.session.execute(delete(noticeableEvent).filter(Pets.petID == petid))
+        db.session.execute(delete(noticeableEvent).filter(noticeableEvent.petID == petid))
         db.session.commit()
         return "<script>alert('Pet delete successful.');window.location.href='/petmgmt';</script>"
     except Exception as e:

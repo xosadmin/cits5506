@@ -71,7 +71,7 @@
             </div>
             <div class="chart-sub-container">
                 <div class="chart-item">
-                    <h2>Water Level in reservoir</h2>
+                    <h2>Water Level percentage in reservoir</h2>
                     <div class="progress"></div>
                         <div id="reservWaterLeft" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
                           70%
@@ -283,16 +283,17 @@
                         }
 
                         bowlWaterElement = document.getElementById("bowlWaterLeft");
-                        reservWaterLeft = document.getElementById("reservWaterLeft");
+                        reservWaterLeftIcon = document.getElementById("reservWaterLeft");
 
-                        bowlWaterElement.style.width = data.waterlevelreservoir + "%";
-                        bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelreservoir);
-                        bowlWaterElement.innerHTML = data.waterlevelreservoir + "%";
+                        reservWaterLeftIcon.style.width = data.waterlevelreservoir + "%";
+                        reservWaterLeftIcon.setAttribute("aria-valuenow", data.waterlevelreservoir);
+                        reservWaterLeftIcon.innerHTML = data.waterlevelreservoir + "%";
 
                         bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
                         bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
                         bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";
 
+                        reservWaterLeftIcon.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
                         bowlWaterElement.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
 
                         if (data.waterlevelbowlpercentage < 40) {
@@ -304,11 +305,11 @@
                         }
 
                         if (data.waterlevelreservoir < 40) {
-                            reservWaterLeft.classList.add('progress-bar-danger');
+                            reservWaterLeftIcon.classList.add('progress-bar-danger');
                         } else if (data.waterlevelreservoir < 70) {
-                            reservWaterLeft.classList.add('progress-bar-warning');
+                            reservWaterLeftIcon.classList.add('progress-bar-warning');
                         } else {
-                            reservWaterLeft.classList.add('progress-bar-success');
+                            reservWaterLeftIcon.classList.add('progress-bar-success');
                         }
 
                         waterlevelChart.data.labels = timeLabels;

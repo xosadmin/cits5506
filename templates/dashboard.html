@@ -85,6 +85,11 @@
                 </div>
                 <div class="chart-item">
                     <h2>Bowl Water left percentage</h2>
+                    <div class="progress">
+                        <div id="bowlWaterLeft" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                          70%
+                        </div>
+                    </div>
                     <canvas id="weightChart"></canvas>
                 </div>
             </div>
@@ -269,6 +274,22 @@
                             document.getElementById("water_quality_bowl").innerHTML = "<b>Bad</b>";
                             document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Change water in bowl is necessary.";
                             document.getElementById("notifyWarn").style.display = "block";
+                        }
+
+                        bowlWaterElement = document.getElementById("bowlWaterLeft");
+
+                        bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
+                        bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
+                        bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";
+
+                        bowlWaterElement.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
+
+                        if (data.waterlevelbowlpercentage < 40) {
+                            bowlWaterElement.classList.add('progress-bar-danger');
+                        } else if (data.waterlevelbowlpercentage < 70) {
+                            bowlWaterElement.classList.add('progress-bar-warning');
+                        } else {
+                            bowlWaterElement.classList.add('progress-bar-success');
                         }
 
                         waterlevelChart.data.labels = timeLabels;

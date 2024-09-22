@@ -83,7 +83,7 @@
                     <canvas id="turbChart"></canvas>
                 </div>
                 <div class="chart-item">
-                    <h2>Water left in bowl</h2>
+                    <h2>Water level in bowl in percentage</h2>
                     <canvas id="weightChart"></canvas>
                 </div>
             </div>
@@ -196,9 +196,9 @@
             const summaryChart = new Chart(summaryCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Water Level', 'Turbidity', 'Weight'],
+                    labels: ['Reservoir Water Level', 'Turbidity', 'Bowl Weight Percentage'],
                     datasets: [{
-                        label: 'Water Level',
+                        label: 'Reservoir Water Level',
                         data: [],
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
@@ -214,7 +214,7 @@
                         fill: false
                     },
                     {
-                        label: 'Weight',
+                        label: 'Weight Percentage',
                         data: [],
                         backgroundColor: 'rgba(153, 102, 255, 0.2)',
                         borderColor: 'rgba(153, 102, 255, 1)',

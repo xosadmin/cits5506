@@ -3,5 +3,5 @@ mqtt_data = {
     'waterlevelbowlpercentage': None,
     'turbiditysensor': None,
     'valve': None,
-    'weightBowl': 0.01,
+    'weightBowl': None,
 }

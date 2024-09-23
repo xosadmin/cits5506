@@ -53,7 +53,7 @@ function drawCharts() {
     summaryChart.draw(summaryData, summaryOptions);
 }
 
-// Periodic data fetch and update charts
+// Fetch and update data every 5 seconds
 setInterval(() => {
     fetch('/mqtt_data')
         .then(response => response.json())
@@ -69,6 +69,7 @@ setInterval(() => {
             turbHistory.push(turbidity);
             timeLabels.push(currentTime);
 
+            // Maintain a max history size of 100 entries
             if (waterlevelHistory.length > 100) {
                 waterlevelHistory.shift();
                 weightHistory.shift();
@@ -76,10 +77,8 @@ setInterval(() => {
                 timeLabels.shift();
             }
 
-            document.addEventListener("DOMContentLoaded", function() {
-                google.charts.setOnLoadCallback(drawCharts);
-            });
-
+            // After data is fetched, draw charts immediately
+            drawCharts();
 
             // Dynamic update for water quality
             if (isNaN(data.turbiditysensor)) {
@@ -132,12 +131,13 @@ setInterval(() => {
         .catch(error => console.error('Error fetching data:', error));
 }, 5000);
 
+// Periodically fetch connection data
 setInterval(() => {
     fetch('/conn_data')
         .then(response => response.json())
         .then(conndata => {
             document.getElementById("ipaddrdisplay").innerHTML = "<p>" + conndata.ipaddr + "</p>";
-            document.getElementById("rssidisplay").innerText = conndata.rssi;
+            document.getElementById("rssidisplay").innerText = "-" + conndata.rssi;
             if (conndata.rssi > 80 && conndata.rssi <= 99){
                 document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
                 document.getElementById("connquality").innerHTML = "<b style='color: red;'>Poor</b>";

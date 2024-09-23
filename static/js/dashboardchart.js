@@ -2,9 +2,9 @@
 google.charts.load('current', {'packages':['corechart']});
 
 // Variables for storing chart data
-let weightHistory = [];
-let turbHistory = [];
-let timeLabels = ['12:00 AM'];
+let weightHistory = [0];
+let turbHistory = [0];
+let timeLabels = [new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })];
 
 // Function to format time as HH:MM AM/PM
 function formatTimeAMPM(timeString) {

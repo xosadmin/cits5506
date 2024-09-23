@@ -76,7 +76,10 @@ setInterval(() => {
                 timeLabels.shift();
             }
 
-            google.charts.setOnLoadCallback(drawCharts);
+            document.addEventListener("DOMContentLoaded", function() {
+                google.charts.setOnLoadCallback(drawCharts);
+            });
+
 
             // Dynamic update for water quality
             if (isNaN(data.turbiditysensor)) {

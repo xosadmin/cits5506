@@ -2,11 +2,11 @@
 google.charts.load('current', {'packages':['corechart']});
 
 // Variables for storing chart data
-let waterlevelHistory = [];
 let weightHistory = [];
 let turbHistory = [];
-let timeLabels = [];
+let timeLabels = [['12:00 AM']];
 
+// Function to format time as HH:MM AM/PM
 function formatTimeAMPM(timeString) {
     let [hours, minutes] = timeString.split(':');
     let ampm = hours >= 12 ? 'PM' : 'AM';
@@ -16,14 +16,15 @@ function formatTimeAMPM(timeString) {
 
 // Function to draw charts
 function drawCharts() {
-    // Draw Water Level Chart
-    let waterlevelData = google.visualization.arrayToDataTable([
-        ['Time', 'Water Level'],
-        ...timeLabels.map((time, index) => [formatTimeAMPM(time), waterlevelHistory[index]])
-    ]);
-    let waterlevelOptions = {title: 'Water Level', curveType: 'function', legend: { position: 'bottom' }};
-    let waterlevelChart = new google.visualization.LineChart(document.getElementById('waterlevelChart'));
-    waterlevelChart.draw(waterlevelData, waterlevelOptions);
+    // Get containers and check if they exist before drawing the chart
+    const turbChartContainer = document.getElementById('turbChart');
+    const weightChartContainer = document.getElementById('weightChart');
+    const summaryChartContainer = document.getElementById('summaryChart');
+
+    if (!turbChartContainer || !weightChartContainer || !summaryChartContainer) {
+        console.error('One or more chart containers are not defined.');
+        return;  // Exit the function if containers are missing
+    }
 
     // Draw Turbidity Chart
     let turbData = google.visualization.arrayToDataTable([
@@ -31,7 +32,7 @@ function drawCharts() {
         ...timeLabels.map((time, index) => [formatTimeAMPM(time), turbHistory[index]])
     ]);
     let turbOptions = {title: 'Turbidity', curveType: 'function', legend: { position: 'bottom' }};
-    let turbChart = new google.visualization.LineChart(document.getElementById('turbChart'));
+    let turbChart = new google.visualization.LineChart(turbChartContainer);
     turbChart.draw(turbData, turbOptions);
 
     // Draw Weight Chart
@@ -40,18 +41,21 @@ function drawCharts() {
         ...timeLabels.map((time, index) => [formatTimeAMPM(time), weightHistory[index]])
     ]);
     let weightOptions = {title: 'Bowl Weight', curveType: 'function', legend: { position: 'bottom' }};
-    let weightChart = new google.visualization.LineChart(document.getElementById('weightChart'));
+    let weightChart = new google.visualization.LineChart(weightChartContainer);
     weightChart.draw(weightData, weightOptions);
 
     // Draw Summary Chart
     let summaryData = google.visualization.arrayToDataTable([
-        ['Time', 'Water Level', 'Turbidity', 'Weight'],
-        ...timeLabels.map((time, index) => [formatTimeAMPM(time), waterlevelHistory[index], turbHistory[index], weightHistory[index]])
+        ['Time', 'Turbidity', 'Weight'],
+        ...timeLabels.map((time, index) => [formatTimeAMPM(time), turbHistory[index], weightHistory[index]])
     ]);
     let summaryOptions = {title: 'Summary', curveType: 'function', legend: { position: 'bottom' }};
-    let summaryChart = new google.visualization.LineChart(document.getElementById('summaryChart'));
+    let summaryChart = new google.visualization.LineChart(summaryChartContainer);
     summaryChart.draw(summaryData, summaryOptions);
 }
+
+// Load Google Charts and set the callback once
+google.charts.setOnLoadCallback(drawCharts);
 
 // Periodic data fetch and update charts
 setInterval(() => {
@@ -60,26 +64,23 @@ setInterval(() => {
         .then(data => {
             let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            let waterLevel = parseFloat(data.waterlevelreservoir);
             let bowlPercentage = parseFloat(data.waterlevelbowlpercentage);
             let turbidity = parseFloat(data.turbiditysensor);
 
-            waterlevelHistory.push(waterLevel);
+            // Push new data into the arrays
             weightHistory.push(bowlPercentage);
             turbHistory.push(turbidity);
             timeLabels.push(currentTime);
 
-            if (waterlevelHistory.length > 100) {
-                waterlevelHistory.shift();
+            // Limit the history arrays to 100 entries
+            if (weightHistory.length > 100) {
                 weightHistory.shift();
                 turbHistory.shift();
                 timeLabels.shift();
             }
 
-            document.addEventListener("DOMContentLoaded", function() {
-                google.charts.setOnLoadCallback(drawCharts);
-            });
-
+            // Draw charts after new data is pushed
+            drawCharts();
 
             // Dynamic update for water quality
             if (isNaN(data.turbiditysensor)) {
@@ -97,20 +98,14 @@ setInterval(() => {
                 document.getElementById("notifyWarn").style.display = "block";
             }
 
-            // Update bowl and reservoir water level bars
+            // Update bowl water level bar
             let bowlWaterElement = document.getElementById("bowlWaterLeft");
-            let reservWaterLeftIcon = document.getElementById("reservWaterLeft");
-
-            reservWaterLeftIcon.style.width = data.waterlevelreservoir + "%";
-            reservWaterLeftIcon.setAttribute("aria-valuenow", data.waterlevelreservoir);
-            reservWaterLeftIcon.innerHTML = data.waterlevelreservoir + "%";
 
             bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
             bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
             bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";
 
             // Add appropriate progress bar color
-            reservWaterLeftIcon.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
             bowlWaterElement.classList.remove('progress-bar-warning', 'progress-bar-danger', 'progress-bar-success');
 
             if (data.waterlevelbowlpercentage < 40) {
@@ -120,37 +115,6 @@ setInterval(() => {
             } else {
                 bowlWaterElement.classList.add('progress-bar-success');
             }
-
-            if (data.waterlevelreservoir < 40) {
-                reservWaterLeftIcon.classList.add('progress-bar-danger');
-            } else if (data.waterlevelreservoir < 70) {
-                reservWaterLeftIcon.classList.add('progress-bar-warning');
-            } else {
-                reservWaterLeftIcon.classList.add('progress-bar-success');
-            }
         })
         .catch(error => console.error('Error fetching data:', error));
 }, 5000);
-
-setInterval(() => {
-    fetch('/conn_data')
-        .then(response => response.json())
-        .then(conndata => {
-            document.getElementById("ipaddrdisplay").innerHTML = "<p>" + conndata.ipaddr + "</p>";
-            document.getElementById("rssidisplay").innerText = "-" + conndata.rssi;
-            if (conndata.rssi > 80 && conndata.rssi <= 99){
-                document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
-                document.getElementById("connquality").innerHTML = "<b style='color: red;'>Poor</b>";
-            } else if (conndata.rssi > 67 && conndata.rssi <= 80) {
-                document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
-                document.getElementById("connquality").innerHTML = "<b style='color: orange;'>Fair</b>";
-            } else if (conndata.rssi >= 0 && conndata.rssi <= 67) {
-                document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
-                document.getElementById("connquality").innerHTML = "<b style='color: green;'>Good</b>";
-            } else {
-                document.getElementById("conntype").innerHTML = "<b>Copper (Network Cable) or unknown</b>";
-                document.getElementById("connquality").innerHTML = "<b style='color: gray;'>Unknown or copper connection</b>";
-            }
-        })
-        .catch(error => console.error('Error fetching data:', error));
-}, 2000);

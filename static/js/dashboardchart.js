@@ -53,7 +53,7 @@ function drawCharts() {
     summaryChart.draw(summaryData, summaryOptions);
 }
 
-// Fetch and update data every 5 seconds
+// Periodic data fetch and update charts
 setInterval(() => {
     fetch('/mqtt_data')
         .then(response => response.json())
@@ -69,7 +69,6 @@ setInterval(() => {
             turbHistory.push(turbidity);
             timeLabels.push(currentTime);
 
-            // Maintain a max history size of 100 entries
             if (waterlevelHistory.length > 100) {
                 waterlevelHistory.shift();
                 weightHistory.shift();
@@ -77,8 +76,10 @@ setInterval(() => {
                 timeLabels.shift();
             }
 
-            // After data is fetched, draw charts immediately
-            drawCharts();
+            document.addEventListener("DOMContentLoaded", function() {
+                google.charts.setOnLoadCallback(drawCharts);
+            });
+
 
             // Dynamic update for water quality
             if (isNaN(data.turbiditysensor)) {
@@ -131,7 +132,6 @@ setInterval(() => {
         .catch(error => console.error('Error fetching data:', error));
 }, 5000);
 
-// Periodically fetch connection data
 setInterval(() => {
     fetch('/conn_data')
         .then(response => response.json())

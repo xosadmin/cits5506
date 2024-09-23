@@ -141,7 +141,7 @@ setInterval(() => {
             } else {
                 document.getElementById("conntype").innerHTML = "<b>Network Cable or unknown</b>";
                 document.getElementById("connquality").innerHTML = "<b style='color: gray;'>Unknown or cable connection</b>";
-                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Prototype is not connected to Wi-Fi, or use cable connection.";
+                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Prototype is not connected to Wi-Fi, or using cable connection.";
                 document.getElementById("notifyWarn").style.display = "block";
             }
         })

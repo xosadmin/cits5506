@@ -4,7 +4,7 @@ google.charts.load('current', {'packages':['corechart']});
 // Variables for storing chart data
 let weightHistory = [];
 let turbHistory = [];
-let timeLabels = [['12:00 AM']];
+let timeLabels = ['12:00 AM'];
 
 // Function to format time as HH:MM AM/PM
 function formatTimeAMPM(timeString) {

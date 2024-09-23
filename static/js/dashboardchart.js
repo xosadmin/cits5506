@@ -118,3 +118,32 @@ setInterval(() => {
         })
         .catch(error => console.error('Error fetching data:', error));
 }, 5000);
+
+setInterval(() => {
+    fetch('/conn_data')
+        .then(response => response.json())
+        .then(conndata => {
+            document.getElementById("ipaddrdisplay").innerHTML = "<p>" + conndata.ipaddr + "</p>";
+            document.getElementById("rssidisplay").innerText = conndata.rssi;
+            if (conndata.rssi > 80 && conndata.rssi <= 99){
+                document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
+                document.getElementById("connquality").innerHTML = "<b style='color: red;'>Poor</b>";
+                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Connection is poor. Please consider to change the position.";
+                document.getElementById("notifyWarn").style.display = "block";
+            } else if (conndata.rssi > 67 && conndata.rssi <= 80) {
+                document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
+                document.getElementById("connquality").innerHTML = "<b style='color: orange;'>Fair</b>";
+                document.getElementById("notifyWarn").style.display = "none";
+            } else if (conndata.rssi >= 0 && conndata.rssi <= 67) {
+                document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
+                document.getElementById("connquality").innerHTML = "<b style='color: green;'>Good</b>";
+                document.getElementById("notifyWarn").style.display = "none";
+            } else {
+                document.getElementById("conntype").innerHTML = "<b>Network Cable or unknown</b>";
+                document.getElementById("connquality").innerHTML = "<b style='color: gray;'>Unknown or cable connection</b>";
+                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Prototype is not connected to Wi-Fi, or use cable connection.";
+                document.getElementById("notifyWarn").style.display = "block";
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}, 2000);

@@ -239,13 +239,7 @@ def update_sensordata():
 @mainBluePrint.route("/dashboard")
 @login_required
 def dashboard():
-    waterlevelpercentage = 0
-    estimate_water_level_remain_days = 0
-    return render_template('dashboard.html', 
-                           mqtt_data=mqtt_data,
-                           waterlevelpercentage=waterlevelpercentage,
-                           estimate_water_level_remain_days=estimate_water_level_remain_days,
-                           wificonn=wificonn)
+    return render_template('dashboard.html')
 
 @mainBluePrint.route("/petmgmt")
 @login_required

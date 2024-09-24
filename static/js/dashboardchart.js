@@ -115,6 +115,21 @@ setInterval(() => {
             } else {
                 bowlWaterElement.classList.add('progress-bar-success');
             }
+
+            let waterLevelResolv = document.getElementById("waterLevelReserv");
+            if (isNaN(data.waterlevelreservoir)) {
+                waterLevelResolv.innerText = "No reservoir detected";
+            }
+            else {
+                if (data.waterlevelreservoir == 1) {
+                    waterLevelResolv.innerText = "Good (Enough water)";
+                }
+                else {
+                    waterLevelResolv.innerText = "Low (Less water)";
+                    document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Refill water reservoir is required.";
+                    document.getElementById("notifyWarn").style.display = "block";
+                }
+            }
         })
         .catch(error => console.error('Error fetching data:', error));
 }, 5000);

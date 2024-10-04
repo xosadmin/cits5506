@@ -40,7 +40,7 @@ function drawCharts() {
         ['Time', 'Weight'],
         ...timeLabels.map((time, index) => [formatTimeAMPM(time), weightHistory[index]])
     ]);
-    let weightOptions = {title: 'Bowl Weight', curveType: 'function', legend: { position: 'bottom' }};
+    let weightOptions = {title: 'Bowl Weight %', curveType: 'function', legend: { position: 'bottom' }};
     let weightChart = new google.visualization.LineChart(weightChartContainer);
     weightChart.draw(weightData, weightOptions);
 

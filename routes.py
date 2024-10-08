@@ -183,7 +183,7 @@ def mqtt_data_view():
         if float(mqtt_data["weightBowl"]) <= 0:
             data = "0"
         else:
-            data = str(int(100.00 - ((float(mqtt_data["weightBowl"]) / float(sysinfo["bowlMaxWeight"])) * 100)))
+            data = str(int(((float(mqtt_data["weightBowl"]) / float(sysinfo["bowlMaxWeight"])) * 100)))
             if int(data) < 0:
                 data = "0"
             elif int(data) > 100:

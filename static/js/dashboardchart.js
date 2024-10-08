@@ -83,7 +83,7 @@ setInterval(() => {
             drawCharts();
 
             // Dynamic update for water quality
-            if (isNaN(data.turbiditysensor)) {
+            if (isNaN(data.turbiditysensor) || data.turbiditysensor == 0) {
                 document.getElementById("water_quality_bowl").innerHTML = "<b style='color: gray;'>No sensor detected</b>";
                 document.getElementById("notifyWarn").style.display = "block";
             } else if (data.turbiditysensor <= 1) {
@@ -94,9 +94,9 @@ setInterval(() => {
                 document.getElementById("notifyWarn").style.display = "none";
             } else {
                 document.getElementById("water_quality_bowl").innerHTML = "<b style='color: red;'>Bad</b>";
-                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Change water in bowl is necessary.";
+                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Water change in bowl is necessary.";
                 document.getElementById("notifyWarn").style.display = "block";
-            }
+            }            
 
             // Update bowl water level bar
             let bowlWaterElement = document.getElementById("bowlWaterLeft");

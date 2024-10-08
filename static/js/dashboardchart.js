@@ -37,16 +37,16 @@ function drawCharts() {
 
     // Draw Weight Chart
     let weightData = google.visualization.arrayToDataTable([
-        ['Time', 'Weight'],
+        ['Time', 'Weight (g)'],
         ...timeLabels.map((time, index) => [formatTimeAMPM(time), weightHistory[index]])
     ]);
-    let weightOptions = {title: 'Bowl Weight %', curveType: 'function', legend: { position: 'bottom' }};
+    let weightOptions = {title: 'Bowl Weight (g)', curveType: 'function', legend: { position: 'bottom' }};
     let weightChart = new google.visualization.LineChart(weightChartContainer);
     weightChart.draw(weightData, weightOptions);
 
     // Draw Summary Chart
     let summaryData = google.visualization.arrayToDataTable([
-        ['Time', 'Turbidity', 'Weight'],
+        ['Time', 'Turbidity', 'Weight (g)'],
         ...timeLabels.map((time, index) => [formatTimeAMPM(time), turbHistory[index], weightHistory[index]])
     ]);
     let summaryOptions = {title: 'Summary', curveType: 'function', legend: { position: 'bottom' }};

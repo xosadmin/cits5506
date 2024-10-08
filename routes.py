@@ -180,7 +180,15 @@ def changewater(action):
 @mainBluePrint.route('/mqtt_data')
 def mqtt_data_view():
     if mqtt_data["weightBowl"] is not None and float(sysinfo["bowlMaxWeight"]) > 0:
-        mqtt_data["waterlevelbowlpercentage"] = str(int(100.00 - ((float(mqtt_data["weightBowl"]) / float(sysinfo["bowlMaxWeight"])) * 100)))
+        if float(mqtt_data["weightBowl"]) <= 0:
+            data = "0"
+        else:
+            data = str(int(100.00 - ((float(mqtt_data["weightBowl"]) / float(sysinfo["bowlMaxWeight"])) * 100)))
+            if int(data) < 0:
+                data = "0"
+            elif int(data) > 100:
+                data = "100"
+    mqtt_data["waterlevelbowlpercentage"] = data
     return jsonify(mqtt_data)
 
 @mainBluePrint.route('/conn_data')

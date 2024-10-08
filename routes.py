@@ -188,6 +188,8 @@ def mqtt_data_view():
                 data = "0"
             elif int(data) > 100:
                 data = "100"
+    else:
+        data = "0"
     mqtt_data["waterlevelbowlpercentage"] = data
     return jsonify(mqtt_data)
 

@@ -170,6 +170,7 @@ def changewater(action):
     if route:
         if route != "dailyanalysis":
             resp = send_mqtt_message("remotecommand",route)
+            PushIOS(f"The remote command {route} is triggered.")
         else:
             resp = "1"
         if resp:

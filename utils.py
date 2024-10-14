@@ -43,14 +43,8 @@ def barkPush(server,token,message):
 
 def PushIOS(message):
     allUserList = []
-    i = 0
     for values in barkList:
         allUserList.append(values)
-    while i < len(allUserList):
-        if "http" in allUserList[i]:
-            if i + 1 < len(allUserList):
-                barkPush(allUserList[i], allUserList[i+1], message)
-            if i + 2 < len(allUserList):
-                i += 2
-            else:
-                break
+    for user, values in barkList.items():
+        if "http" in values[0]:
+            barkPush(values[0], values[1], message)

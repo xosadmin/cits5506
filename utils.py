@@ -5,7 +5,7 @@ import hashlib
 import pytz
 import random
 import names
-import urllib.request
+import urllib.parse, urllib.request
 from conf import barkList
 
 def uuidGen():
@@ -37,14 +37,15 @@ def sortEventSheet(query):
     return result
 
 def barkPush(server,token,message):
-    urlCompose = server + "/" + token + "/" + message + "?sound=tiptoes"
-    f = urllib.request.urlopen(urlCompose)
-    print(f.read())
+    encoded_message = urllib.parse.quote(message)
+    urlCompose = f"{server}/{token}/{encoded_message}?sound=tiptoes"
+    try:
+        f = urllib.request.urlopen(urlCompose)
+        print(f.read())
+    except Exception as e:
+        print(f"Error sending push notification: {e}")
 
 def PushIOS(message):
-    allUserList = []
-    for values in barkList:
-        allUserList.append(values)
     for user, values in barkList.items():
         if "http" in values[0]:
             barkPush(values[0], values[1], message)

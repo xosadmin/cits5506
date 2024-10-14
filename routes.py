@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, jsonify, request, render_template, url
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from sqlalchemy import and_,delete,update,func
 from models.sqlmodel import *
-from utils import uuidGen, getTime, md5Calc, calcNormalDrink, sortEventSheet
+from utils import uuidGen, getTime, md5Calc, calcNormalDrink, sortEventSheet, barkPush, PushIOS
 from conf import sysinfo, mqttinfo
 from models.mqtt import mqtt_data
 from models.wificonn import wificonn
@@ -115,6 +115,7 @@ def calculate_daily_drink():
                             create_date=nowTime,
                             eventDetail=f"Pet {petID} has exceeded the normal drink value for more than 2 days. Potential disease."
                         )
+                        PushIOS(f"Pet {petID} has exceeded the normal drink value for more than 2 days. Potential disease.")
                 elif float(total_drink) < float(threadsholdLow):
                     query = noticeableEvent(
                         petID=petID,
@@ -130,6 +131,7 @@ def calculate_daily_drink():
                             create_date=nowTime,
                             eventDetail=f"Pet {petID} has had lower than normal drink value for more than 2 days. Potential disease."
                         )
+                        PushIOS(f"Pet {petID} has had lower than normal drink value for more than 2 days. Potential disease.")
                 else:
                     print(f"Pet {petID} is within the normal range.")
 
@@ -278,6 +280,7 @@ def addPet():
                 query = Pets(petID=petID,petName=petName,weight=petWeight,normalDrinkValue=normalDrinkValue)
                 db.session.add(query)
                 db.session.commit()
+                PushIOS(f"Your new pet {petName} ({petID}) is registered.")
                 return "<script>alert('Pet registration successful.');window.location.href='/petmgmt';</script>"
             except Exception as e:
                 print(f"Error during registration pet: {e}")
@@ -293,6 +296,7 @@ def delPet(petid):
         db.session.execute(delete(Pets).filter(Pets.petID == petid))
         db.session.execute(delete(noticeableEvent).filter(noticeableEvent.petID == petid))
         db.session.commit()
+        PushIOS(f"Your pet {petid} is deleted.")
         return "<script>alert('Pet delete successful.');window.location.href='/petmgmt';</script>"
     except Exception as e:
         db.session.rollback()

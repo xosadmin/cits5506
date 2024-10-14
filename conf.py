@@ -17,3 +17,7 @@ mqttinfo = {
     "brokerAddr": "",
     "port": 1883,
 }
+
+barkList = {}
+# "user": [server, token]
+# For IOS device only

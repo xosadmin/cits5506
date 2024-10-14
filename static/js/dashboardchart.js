@@ -46,7 +46,7 @@ function drawCharts() {
 
     // Draw Summary Chart
     let summaryData = google.visualization.arrayToDataTable([
-        ['Time', 'Turbidity', 'Weight'],
+        ['Time', 'Turbidity', 'Weight %'],
         ...timeLabels.map((time, index) => [formatTimeAMPM(time), turbHistory[index], weightHistory[index]])
     ]);
     let summaryOptions = {title: 'Summary', curveType: 'function', legend: { position: 'bottom' }};
@@ -66,6 +66,7 @@ setInterval(() => {
 
             let bowlPercentage = parseFloat(data.waterlevelbowlpercentage);
             let turbidity = parseFloat(data.turbiditysensor);
+            let currentBowlWg = parseFloat(data.weightBowl).toFixed(2);
 
             // Push new data into the arrays
             weightHistory.push(bowlPercentage);
@@ -99,8 +100,10 @@ setInterval(() => {
             }            
 
             // Update bowl water level bar
+            let bowlCurrentWeight = document.getElementById("bowlWaterCurrent");
             let bowlWaterElement = document.getElementById("bowlWaterLeft");
 
+            bowlWaterElement.innerText = currentBowlWg;
             bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
             bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
             bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";

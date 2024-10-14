@@ -254,7 +254,8 @@ def update_sensordata():
 @mainBluePrint.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    bowlMaxWg = str(round(float(sysinfo["bowlMaxWeight"]),2))
+    return render_template('dashboard.html',maximumWg=bowlMaxWg)
 
 @mainBluePrint.route("/petmgmt")
 @login_required

@@ -103,7 +103,7 @@ setInterval(() => {
             let bowlCurrentWeight = document.getElementById("bowlWaterCurrent");
             let bowlWaterElement = document.getElementById("bowlWaterLeft");
 
-            bowlWaterElement.innerText = currentBowlWg;
+            bowlCurrentWeight.innerText = currentBowlWg;
             bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
             bowlWaterElement.setAttribute("aria-valuenow", data.waterlevelbowlpercentage);
             bowlWaterElement.innerHTML = data.waterlevelbowlpercentage + "%";

@@ -68,7 +68,7 @@ setInterval(() => {
             let turbidity = parseFloat(data.turbiditysensor);
             let currentBowlWg = parseFloat(data.weightBowl);
 
-            if (currentBowlWg < 0) {
+            if (currentBowlWg < 0 || isNaN(currentBowlWg)) {
                 currentBowlWg = 0;
             }
             

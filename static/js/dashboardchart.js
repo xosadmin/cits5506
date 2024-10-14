@@ -66,7 +66,13 @@ setInterval(() => {
 
             let bowlPercentage = parseFloat(data.waterlevelbowlpercentage);
             let turbidity = parseFloat(data.turbiditysensor);
-            let currentBowlWg = parseFloat(data.weightBowl).toFixed(2);
+            let currentBowlWg = parseFloat(data.weightBowl);
+
+            if (currentBowlWg < 0) {
+                currentBowlWg = 0;
+            }
+            
+            currentBowlWg = currentBowlWg.toFixed(2);
 
             // Push new data into the arrays
             weightHistory.push(bowlPercentage);

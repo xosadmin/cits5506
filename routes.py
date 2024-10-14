@@ -330,7 +330,7 @@ def drinkhistory():
         Pets.petName,
         PetDrink.create_date,
         PetDrink.drinkAmount
-    ).join(Pets, PetDrink.petID == Pets.petID).order_by(PetDrink.drinkAmount.desc()).all()
+    ).join(Pets, PetDrink.petID == Pets.petID).order_by(PetDrink.create_date.desc()).all()
     return render_template("petdrinkhistory.html",result=query)
 
 @mainBluePrint.route("/noticeevent")

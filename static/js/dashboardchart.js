@@ -128,23 +128,22 @@ setInterval(() => {
             }
 
             let waterLevelResolv = document.getElementById("waterLevelReserv");
-            if (isNaN(reservWaterLevel)) {
+            if (reservWaterLevel.toLowerCase() === "false") {
+                waterLevelResolv.innerText = "Good (Enough water)";
+                reservWaterLevelBar.style.width = "90%";
+                reservWaterLevelBar.setAttribute("aria-valuenow", 90);
+                reservWaterLevelBar.innerHTML = "Good";
+            } else if (reservWaterLevel.toLowerCase() === "true") {
+                waterLevelResolv.innerText = "Low (Less water)";
+                reservWaterLevelBar.style.width = "20%";
+                reservWaterLevelBar.setAttribute("aria-valuenow", 20);
+                reservWaterLevelBar.innerHTML = "Low";
+                document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Refill water reservoir is required.";
+                document.getElementById("notifyWarn").style.display = "block";
+            } else {
                 waterLevelResolv.innerText = "No reservoir detected";
             }
-            else {
-                if (reservWaterLevel === "False") {
-                    waterLevelResolv.innerText = "Good (Enough water)";
-                    reservWaterLevelBar.style.width = "90%";
-                    reservWaterLevelBar.innerHTML = "Good";
-                }
-                else {
-                    waterLevelResolv.innerText = "Low (Less water)";
-                    reservWaterLevelBar.style.width = "20%";
-                    reservWaterLevelBar.innerHTML = "Low";
-                    document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Refill water reservoir is required.";
-                    document.getElementById("notifyWarn").style.display = "block";
-                }
-            }
+            
         })
         .catch(error => console.error('Error fetching data:', error));
 }, 5000);

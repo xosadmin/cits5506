@@ -132,7 +132,7 @@ setInterval(() => {
                 waterLevelResolv.innerText = "No reservoir detected";
             }
             else {
-                if (reservWaterLevel == "True") {
+                if (reservWaterLevel === "True") {
                     waterLevelResolv.innerText = "Good (Enough water)";
                     reservWaterLevelBar.style.width = "90%";
                     reservWaterLevelBar.innerHTML = "Good";

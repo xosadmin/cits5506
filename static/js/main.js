@@ -52,6 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
         triggerAction('dailyanalysis');
     });
 
+    document.getElementById('CloseValve').addEventListener('click', function() {
+        triggerAction('closevalve');
+    });
+
     document.getElementById('ResetFeeder').addEventListener('click', function() {
         if (confirm("Danger Zone - You will lose connection with prototype for few minutes. Do you wish to continue?")) {
             triggerAction('restartfeeder');

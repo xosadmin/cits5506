@@ -167,6 +167,8 @@ def changewater(action):
     elif action == "dailyanalysis":
         route = "dailyanalysis"
         calculate_daily_drink()
+    elif action == "closevalve":
+        route = "closevalve"
     if route:
         if route != "dailyanalysis":
             resp = send_mqtt_message("remotecommand",route)

@@ -153,7 +153,7 @@ setInterval(() => {
         .then(response => response.json())
         .then(conndata => {
             document.getElementById("ipaddrdisplay").innerHTML = "<p>" + conndata.ipaddr + "</p>";
-            document.getElementById("rssidisplay").innerText = conndata.rssi;
+            document.getElementById("rssidisplay").innerText = "-" + conndata.rssi;
             if (conndata.rssi > 80 && conndata.rssi <= 99){
                 document.getElementById("conntype").innerHTML = "<b>Wi-Fi</b>";
                 document.getElementById("connquality").innerHTML = "<b style='color: red;'>Poor</b>";

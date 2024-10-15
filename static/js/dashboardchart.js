@@ -127,12 +127,12 @@ setInterval(() => {
             }
 
             let waterLevelResolv = document.getElementById("waterLevelReserv");
-            if (!data.waterlevelreservoir) {
+            if (data.waterlevelreservoir === "False") {
                 waterLevelResolv.innerText = "Good (Enough water)";
                 reservWaterLevelBar.style.width = "90%";
                 reservWaterLevelBar.setAttribute("aria-valuenow", 90);
                 reservWaterLevelBar.innerHTML = "Good";
-            } else if (data.waterlevelreservoir) {
+            } else if (data.waterlevelreservoir === "True") {
                 waterLevelResolv.innerText = "Low (Less water)";
                 reservWaterLevelBar.style.width = "20%";
                 reservWaterLevelBar.setAttribute("aria-valuenow", 20);

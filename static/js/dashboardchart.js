@@ -64,7 +64,7 @@ setInterval(() => {
         .then(data => {
             let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            let reservWaterLevel = parseFloat(data.reservoir);
+            let reservWaterLevel = parseFloat(data.waterlevelreservoir);
             let bowlPercentage = parseFloat(data.waterlevelbowlpercentage);
             let turbidity = parseFloat(data.turbiditysensor);
             let currentBowlWg = parseFloat(data.weightBowl);
@@ -132,7 +132,7 @@ setInterval(() => {
                 waterLevelResolv.innerText = "No reservoir detected";
             }
             else {
-                if (reservWaterLevel === "True") {
+                if (reservWaterLevel === "False") {
                     waterLevelResolv.innerText = "Good (Enough water)";
                     reservWaterLevelBar.style.width = "90%";
                     reservWaterLevelBar.innerHTML = "Good";

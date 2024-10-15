@@ -64,6 +64,7 @@ setInterval(() => {
         .then(data => {
             let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+            let reservWaterLevel = parseFloat(data.reservoir);
             let bowlPercentage = parseFloat(data.waterlevelbowlpercentage);
             let turbidity = parseFloat(data.turbiditysensor);
             let currentBowlWg = parseFloat(data.weightBowl);
@@ -108,6 +109,7 @@ setInterval(() => {
             // Update bowl water level bar
             let bowlCurrentWeight = document.getElementById("bowlWaterCurrent");
             let bowlWaterElement = document.getElementById("bowlWaterLeft");
+            let reservWaterLevelBar = document.getElementById("waterLevelReservoir");
 
             bowlCurrentWeight.innerText = currentBowlWg;
             bowlWaterElement.style.width = data.waterlevelbowlpercentage + "%";
@@ -126,15 +128,19 @@ setInterval(() => {
             }
 
             let waterLevelResolv = document.getElementById("waterLevelReserv");
-            if (isNaN(data.waterlevelreservoir)) {
+            if (isNaN(reservWaterLevel)) {
                 waterLevelResolv.innerText = "No reservoir detected";
             }
             else {
-                if (data.waterlevelreservoir == 1) {
+                if (reservWaterLevel == "True") {
                     waterLevelResolv.innerText = "Good (Enough water)";
+                    reservWaterLevelBar.style.width = "90%";
+                    reservWaterLevelBar.innerHTML = "Good";
                 }
                 else {
                     waterLevelResolv.innerText = "Low (Less water)";
+                    reservWaterLevelBar.style.width = "20%";
+                    reservWaterLevelBar.innerHTML = "Low";
                     document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Refill water reservoir is required.";
                     document.getElementById("notifyWarn").style.display = "block";
                 }

@@ -132,11 +132,13 @@ setInterval(() => {
                 reservWaterLevelBar.style.width = "90%";
                 reservWaterLevelBar.setAttribute("aria-valuenow", 90);
                 reservWaterLevelBar.innerHTML = "Good";
+                reservWaterLevelBar.classList.add('progress-bar-success');
             } else if (data.waterlevelreservoir === "True") {
                 waterLevelResolv.innerText = "Low (Less water)";
                 reservWaterLevelBar.style.width = "20%";
                 reservWaterLevelBar.setAttribute("aria-valuenow", 20);
                 reservWaterLevelBar.innerHTML = "Low";
+                reservWaterLevelBar.classList.add('progress-bar-daner');
                 document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Refill water reservoir is required.";
                 document.getElementById("notifyWarn").style.display = "block";
             } else {

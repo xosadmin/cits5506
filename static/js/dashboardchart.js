@@ -138,7 +138,7 @@ setInterval(() => {
                 reservWaterLevelBar.style.width = "20%";
                 reservWaterLevelBar.setAttribute("aria-valuenow", 20);
                 reservWaterLevelBar.innerHTML = "Low";
-                reservWaterLevelBar.classList.add('progress-bar-daner');
+                reservWaterLevelBar.classList.add('progress-bar-danger');
                 document.getElementById("notifyWarn").innerHTML = "<strong>Warning: </strong>Refill water reservoir is required.";
                 document.getElementById("notifyWarn").style.display = "block";
             } else {
